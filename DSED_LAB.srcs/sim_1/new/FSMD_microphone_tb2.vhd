@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 16.11.2019 16:08:33
+-- Create Date: 17.11.2019 14:07:57
 -- Design Name: 
--- Module Name: FSMD_microphone_tb1 - Behavioral
+-- Module Name: FSMD_microphone_tb2 - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity FSMD_microphone_tb1 is
+entity FSMD_microphone_tb2 is
 --  Port ( );
-end FSMD_microphone_tb1;
+end FSMD_microphone_tb2;
 
-architecture Behavioral of FSMD_microphone_tb1 is
+architecture Behavioral of FSMD_microphone_tb2 is
 
 component FSMD_microphone is
 Port ( clk_12megas : in STD_LOGIC;
@@ -83,6 +83,6 @@ begin
     wait for CLK_PERIOD2/2;
 end process;
 
-micro_data<='1';
+
 
 end Behavioral;

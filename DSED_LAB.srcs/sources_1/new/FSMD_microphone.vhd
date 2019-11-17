@@ -56,21 +56,27 @@ signal aux_count1 : integer :=0;
 signal aux_count2 : integer :=0;
 signal aux_micro_data : integer :=0;
 
+signal aux_sample_out : STD_LOGIC_VECTOR (8-1 downto 0);
+signal aux_sample_out_ready : STD_LOGIC;
 
-
+signal flag : STD_LOGIC :='0';
 begin
 
-process (enable_4_cycles)
+process (enable_4_cycles,reset)
 begin
+if reset = '1' then
+cicle<=0;
+else
  if rising_edge(enable_4_cycles) then
     cicle<= next_cicle;
  end if;
+end if;
 end process;
 
 process(cicle,reset)
 begin
 if reset = '1' then
-cicle<=0;
+next_cicle<=0;
 else
 if(cicle = 299) then
 next_cicle <= 0;
@@ -98,20 +104,34 @@ begin
     else
     aux_micro_data<=0;
     end if;
-    if(cicle<256) then
-        next_count1<= count1 + aux_micro_data;
-    end if;
-    if (cicle>149) then
-        next_count2<= count2 + aux_micro_data;
-    end if;
+
+
     
     if(reset='1') then
-    sample_out<="00000000";
+    aux_sample_out<="00000000";
+    next_count1<=0;
+    next_count2<=0;
     else
+    
+    if(cicle<256) then
+    if (count1<255) then
+        next_count1<= count1 + aux_micro_data;
+    end if;
+    elsif (cicle =257) then
+        next_count1<=0;
+    end if;
+    if (cicle>149 or cicle <106) then
+    if (count2<255) then
+       next_count2<= count2 + aux_micro_data;
+    end if;
+    elsif (cicle =107) then
+        next_count2<=0;
+    end if;
+    
     if (cicle =106) then 
-        sample_out <= std_logic_vector(to_unsigned(count2,sample_size));
+        aux_sample_out <= std_logic_vector(to_unsigned(count2,sample_size));
     elsif (cicle= 256) then
-        sample_out <= std_logic_vector(to_unsigned(count1,sample_size));
+        aux_sample_out <= std_logic_vector(to_unsigned(count1,sample_size));
     end if;
     end if;
 end process;
@@ -119,16 +139,26 @@ end process;
 process(clk_12megas, reset)
 begin
 if (reset='1') then
-sample_out_ready<='0';
+aux_sample_out_ready<='0';
 else
+  if (cicle=105 or cicle = 255) then
+  flag <='1';
+  end if;
+  
   if rising_edge(clk_12megas) then
     if (cicle = 106 or cicle = 256) then
-        sample_out_ready<='1';
-        
+        if(flag='1') then
+        flag<='0';
+        aux_sample_out_ready<='1';
+        else
+        aux_sample_out_ready<='0';
+        end if;
     else
-        sample_out_ready<='0';
+        aux_sample_out_ready<='0';
    end if;
     end if;
 end if;
 end process;
+sample_out_ready<=aux_sample_out_ready;
+sample_out<=aux_sample_out;
 end Behavioral;
