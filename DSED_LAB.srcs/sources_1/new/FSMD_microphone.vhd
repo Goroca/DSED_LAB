@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.package_dsed.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -36,7 +37,7 @@ Port ( clk_12megas : in STD_LOGIC;
 reset : in STD_LOGIC;
 enable_4_cycles : in STD_LOGIC;
 micro_data : in STD_LOGIC;
-sample_out : out STD_LOGIC_VECTOR (8-1 downto 0);
+sample_out : out STD_LOGIC_VECTOR (sample_size-1 downto 0);
 sample_out_ready : out STD_LOGIC);
 end FSMD_microphone;
 
@@ -45,7 +46,6 @@ architecture Behavioral of FSMD_microphone is
 signal next_cicle : integer :=0;
 signal cicle : integer :=0;
 
-signal sample_size : integer := 8;
 
 --Numero unos
 signal count1 : integer :=0;
