@@ -47,7 +47,7 @@ component en_4_cycles
 end component;
 
 -- input signals declaration
-signal clk_12megas, reset : STD_LOGIC := '0';
+signal reset, clk_12megas : STD_LOGIC := '0';
 
 -- output signals declaration
 signal clk_3megas, en_2_ciclos, en_4_ciclos : STD_LOGIC;
