@@ -71,9 +71,17 @@ begin
 if (reset = '1') then
     count_3megas <= 0;
     count_en_4_ciclos <= 2;
-elsif (rising_edge(clk_12megas)) then
+    current_state_clk_3megas <= '0';
+    current_state_en_4_ciclos <= '0';
+    current_state_en_2_ciclos <= '0';
+else
+    if (rising_edge(clk_12megas)) then
     count_3megas <= next_count_3megas;
     count_en_4_ciclos <= next_count_en_4_ciclos;
+    current_state_clk_3megas <= next_state_clk_3megas;
+    current_state_en_4_ciclos <= next_state_en_4_ciclos;
+    current_state_en_2_ciclos <= next_state_en_2_ciclos;
+    end if;
 end if;
 
 end process;
@@ -87,6 +95,7 @@ if (reset = '1') then
     next_state_clk_3megas <= '0';
     next_state_en_4_ciclos <= '0';
     next_state_en_2_ciclos <= '0';
+
     
 else    
     next_state_en_2_ciclos <= not current_state_en_2_ciclos;
@@ -104,23 +113,7 @@ end if;
 
 end process;
 
--- lógica de cambio de estado
-process(reset, clk_12megas)
-begin
-    
-    if (reset = '1') then  
-    current_state_clk_3megas <= '0';
-    current_state_en_4_ciclos <= '0';
-    current_state_en_2_ciclos <= '0';
-    else
-        if (rising_edge(clk_12megas)) then
-    current_state_clk_3megas <= next_state_clk_3megas;
-    current_state_en_4_ciclos <= next_state_en_4_ciclos;
-    current_state_en_2_ciclos <= next_state_en_2_ciclos;
-        end if;
-    end if;
-    
-end process;
+
 
 -- actualización de las salidas
 clk_3megas <= current_state_clk_3megas;
