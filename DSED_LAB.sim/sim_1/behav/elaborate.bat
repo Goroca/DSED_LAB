@@ -1,6 +1,6 @@
 @echo off
 set xv_path=C:\\Xilinx\\Vivado\\2017.2\\bin
-call %xv_path%/xelab  -wto a9b082810ecd4554a74c2f800bd0f577 -m64 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot FSMD_microphone_tb1_behav xil_defaultlib.FSMD_microphone_tb1 -log elaborate.log
+call %xv_path%/xelab  -wto a9b082810ecd4554a74c2f800bd0f577 -m64 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot en_4_cycles_tb_behav xil_defaultlib.en_4_cycles_tb -log elaborate.log
 if "%errorlevel%"=="0" goto SUCCESS
 if "%errorlevel%"=="1" goto END
 :END
