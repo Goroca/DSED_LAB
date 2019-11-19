@@ -75,7 +75,6 @@ component pwm
 end component;
 
 -- señales auxiliares
-signal aux_clk_3megas : STD_LOGIC;
 signal aux_en_2_ciclos, aux_en_4_ciclos : STD_LOGIC;
 
 begin
@@ -85,7 +84,7 @@ U1: en_4_cycles
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
-        clk_3megas => aux_clk_3megas,
+        clk_3megas => micro_clk,
         en_2_ciclos => aux_en_2_ciclos,
         en_4_ciclos => aux_en_4_ciclos);
         
@@ -106,5 +105,9 @@ U3: pwm
         sample_in => sample_in, 
         sample_request => sample_request,
         pwm_pulse => jack_pwm);
+ 
+ -- signal output assignments
+micro_LR <= SAMPLE_CLK_EDGE;      
+jack_sd <= AUDIO_OP_CONTROL;
 
 end Behavioral;
