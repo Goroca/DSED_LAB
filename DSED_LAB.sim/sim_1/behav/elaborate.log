@@ -1,6 +1,6 @@
 Vivado Simulator 2017.2
 Copyright 1986-1999, 2001-2016 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2017.2/bin/unwrapped/win64.o/xelab.exe -wto a9b082810ecd4554a74c2f800bd0f577 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot en_4_cycles_tb_behav xil_defaultlib.en_4_cycles_tb -log elaborate.log 
+Running: C:/Xilinx/Vivado/2017.2/bin/unwrapped/win64.o/xelab.exe -wto a9b082810ecd4554a74c2f800bd0f577 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot audio_interface_tb_behav xil_defaultlib.audio_interface_tb -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
@@ -10,7 +10,11 @@ Time Resolution for simulation is 1ps
 Compiling package std.standard
 Compiling package std.textio
 Compiling package ieee.std_logic_1164
+Compiling package xil_defaultlib.package_dsed
 Compiling package ieee.numeric_std
 Compiling architecture behavioral of entity xil_defaultlib.en_4_cycles [en_4_cycles_default]
-Compiling architecture behavioral of entity xil_defaultlib.en_4_cycles_tb
-Built simulation snapshot en_4_cycles_tb_behav
+Compiling architecture behavioral of entity xil_defaultlib.FSMD_microphone [fsmd_microphone_default]
+Compiling architecture behavioral of entity xil_defaultlib.pwm [pwm_default]
+Compiling architecture behavioral of entity xil_defaultlib.audio_interface [audio_interface_default]
+Compiling architecture behavioral of entity xil_defaultlib.audio_interface_tb
+Built simulation snapshot audio_interface_tb_behav
