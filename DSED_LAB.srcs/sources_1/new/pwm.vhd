@@ -56,11 +56,12 @@ begin
     if (reset ='1') then
         buff<='0';
         r_reg<= (others=>'0');
-    elsif(rising_edge(clk_12megas)) then
+    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
         buff<=next_buff;
         r_reg<= r_next;
     end if;
 end process;
+
 r_next<=r_reg+1;
 
 next_buff <= 

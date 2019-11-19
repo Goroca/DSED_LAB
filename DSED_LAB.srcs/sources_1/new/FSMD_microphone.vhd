@@ -43,9 +43,8 @@ end FSMD_microphone;
 
 architecture Behavioral of FSMD_microphone is
 --Counter
-signal next_cicle : integer :=0;
-signal cicle : integer :=0;
-
+signal next_cicle : unsigned (8 downto 0);
+signal cicle :      unsigned (8 downto 0);
 
 --Numero unos
 signal count1 : integer :=0;
@@ -62,27 +61,23 @@ signal aux_sample_out_ready : STD_LOGIC;
 signal flag : STD_LOGIC :='0';
 begin
 
-process (enable_4_cycles,reset)
+process (clk_12megas,reset)
 begin
 if reset = '1' then
-cicle<=0;
-else
- if rising_edge(enable_4_cycles) then
+cicle<=to_unsigned(0,9);
+elsif rising_edge(clk_12megas) then
+    if(enable_4_cycles='1') then
     cicle<= next_cicle;
- end if;
+    end if;
 end if;
 end process;
 
 process(cicle,reset)
 begin
-if reset = '1' then
-next_cicle<=0;
-else
 if(cicle = 299) then
-next_cicle <= 0;
+next_cicle <= to_unsigned(0,9);
 else 
 next_cicle<= cicle +1;
-end if;
 end if;
 end process;
 
@@ -145,7 +140,7 @@ else
   flag <='1';
   end if;
   
-  if rising_edge(clk_12megas) then
+  if (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
     if (cicle = 106 or cicle = 256) then
         if(flag='1') then
         flag<='0';

@@ -18,7 +18,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
-
+use work.package_dsed.all;
 
 entity en_4_cycles is
     Port ( clk_12megas : in STD_LOGIC;
@@ -31,10 +31,12 @@ end en_4_cycles;
 architecture Behavioral of en_4_cycles is
 
 -- declaración de señales auxiliares: contadores
-signal count_3megas : integer := 0;
-signal count_en_4_ciclos : integer := 2;
-signal next_count_3megas : integer := 0;
-signal next_count_en_4_ciclos : integer := 0;
+signal count_3megas : unsigned (0 downto 0);
+
+signal count_en_4_ciclos : unsigned (1 downto 0);
+signal next_count_3megas : unsigned (0 downto 0);
+signal next_count_en_4_ciclos : unsigned (1 downto 0);
+
 -- declaración de señales auxiliares: cambio de estado
 signal current_state_clk_3megas, next_state_clk_3megas : STD_LOGIC := '0';
 signal current_state_en_4_ciclos, next_state_en_4_ciclos : STD_LOGIC := '0';
@@ -44,44 +46,21 @@ begin
 
 -- lógica secuencial de entrada: contadores
 
-process(reset, count_3megas, count_en_4_ciclos)
-begin
-
-if (reset = '1') then
-    next_count_3megas <= 0;
-    next_count_en_4_ciclos <= 0;
-else
-    next_count_3megas <= count_3megas + 1;
-    next_count_en_4_ciclos <=  count_en_4_ciclos + 1;
-
-    if (count_3megas = 1) then
-        next_count_3megas <= 0;
-    end if;
-    
-    if (count_en_4_ciclos = 3) then
-        next_count_en_4_ciclos <= 0;
-    end if;
-end if;
-
-end process;
-
 process(clk_12megas, reset)
 begin
 
 if (reset = '1') then
-    count_3megas <= 0;
-    count_en_4_ciclos <= 2;
+    count_3megas <= to_unsigned(0, 1);
+    count_en_4_ciclos <= to_unsigned(2, 2);
     current_state_clk_3megas <= '0';
     current_state_en_4_ciclos <= '0';
     current_state_en_2_ciclos <= '0';
-else
-    if (rising_edge(clk_12megas)) then
+elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
     count_3megas <= next_count_3megas;
     count_en_4_ciclos <= next_count_en_4_ciclos;
     current_state_clk_3megas <= next_state_clk_3megas;
     current_state_en_4_ciclos <= next_state_en_4_ciclos;
     current_state_en_2_ciclos <= next_state_en_2_ciclos;
-    end if;
 end if;
 
 end process;
@@ -113,7 +92,8 @@ end if;
 
 end process;
 
-
+    next_count_3megas <= count_3megas + 1;
+    next_count_en_4_ciclos <=  count_en_4_ciclos + 1;
 
 -- actualización de las salidas
 clk_3megas <= current_state_clk_3megas;
