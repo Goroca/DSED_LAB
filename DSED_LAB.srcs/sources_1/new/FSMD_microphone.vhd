@@ -42,37 +42,45 @@ sample_out_ready : out STD_LOGIC);
 end FSMD_microphone;
 
 architecture Behavioral of FSMD_microphone is
---Counter
-signal next_cicle : unsigned (8 downto 0);
-signal cicle :      unsigned (8 downto 0);
+
+type state_type is (S0,S1,S2,S3,S4);
+signal state, next_state : state_type;
+
+signal next_cicle : unsigned (8 downto 0):= to_unsigned(0,9);
+signal cicle :      unsigned (8 downto 0):= to_unsigned(0,9);
 
 --Numero unos
-signal count1 : integer :=0;
-signal count2 : integer :=0;
-signal next_count1 : integer :=0;
-signal next_count2 : integer :=0;
-signal aux_count1 : integer :=0;
-signal aux_count2 : integer :=0;
-signal aux_micro_data : integer :=0;
+signal count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal next_count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal next_count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal aux_count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal aux_count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal aux_micro_data : unsigned (0 downto 0);
 
-signal aux_sample_out : STD_LOGIC_VECTOR (8-1 downto 0);
+signal aux_sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0);
 signal aux_sample_out_ready : STD_LOGIC;
 
-signal flag : STD_LOGIC :='0';
 begin
 
 process (clk_12megas,reset)
 begin
 if reset = '1' then
-cicle<=to_unsigned(0,9);
-elsif rising_edge(clk_12megas) then
+count1<= to_unsigned(0,sample_size);
+count2<= to_unsigned(0,sample_size);
+cicle<= to_unsigned(0,9);
+state<=S0;
+elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
     if(enable_4_cycles='1') then
-    cicle<= next_cicle;
+        count1<= next_count1+1;
+        count2<= next_count2+1;
+        state<=next_state;
+        cicle<= next_cicle;      
     end if;
 end if;
 end process;
 
-process(cicle,reset)
+process(cicle)
 begin
 if(cicle = 299) then
 next_cicle <= to_unsigned(0,9);
@@ -81,79 +89,97 @@ next_cicle<= cicle +1;
 end if;
 end process;
 
-process(enable_4_cycles,reset)
+NEXT_STATE_DECODE : process (state,cicle,reset)
 begin
-if reset ='1' then
-  count1<=0;
-  count2<=0;
-else  
-  count1<=next_count1;
-  count2<=next_count2;  
-end if;
+next_state <= S0;
+    case(state) is
+        when S0 =>
+            if (reset='1') then
+              next_state<=S0;
+              aux_sample_out_ready<='0';
+            else
+              next_state<=S1;
+              aux_sample_out_ready<='0';
+            end if;
+         when S1 =>
+            if (reset='1') then
+              next_state<=S0;
+              aux_sample_out_ready<='0';
+            elsif(cicle>105) then
+              next_state<=S2;
+              aux_sample_out_ready<='1';
+            else
+              next_state<=S1;
+              aux_sample_out_ready<='0';
+          end if;
+          
+          when S2=>
+            if (reset='1') then
+              next_state<=S0;
+              aux_sample_out_ready<='0';
+            elsif(cicle>149) then
+              next_state<=S3;
+              aux_sample_out_ready<='0';
+            else
+              next_state<=S2;
+              aux_sample_out_ready<='0';
+            end if;                
+          
+          when S3=>
+            if (reset='1') then
+              next_state<=S0;
+              aux_sample_out_ready<='0';
+            elsif(cicle>255) then
+              next_state<=S4;
+              aux_sample_out_ready<='1';
+            else
+              next_state<=S3;
+              aux_sample_out_ready<='0';
+            end if;
+            
+          when others => 
+            if (reset='1') then
+              next_state<=S0;
+              aux_sample_out_ready<='0';
+            elsif(cicle<255) then
+              next_state<=S1;
+              aux_sample_out_ready<='0';
+            else
+              next_state<=S4;
+              aux_sample_out_ready<='0';              
+            end if;
+         end case;
 end process;
 
-process(cicle,reset)
+    
+OUTPUT_DECODE_MOORE : process (state, micro_data,count1,count2,aux_micro_data)
 begin
-    if (micro_data='1') then 
-    aux_micro_data<=1;
-    else
-    aux_micro_data<=0;
-    end if;
-
-
-    
-    if(reset='1') then
-    aux_sample_out<="00000000";
-    next_count1<=0;
-    next_count2<=0;
-    else
-    
-    if(cicle<256) then
-    if (count1<255) then
-        next_count1<= count1 + aux_micro_data;
-    end if;
-    elsif (cicle =257) then
-        next_count1<=0;
-    end if;
-    if (cicle>149 or cicle <106) then
-    if (count2<255) then
-       next_count2<= count2 + aux_micro_data;
-    end if;
-    elsif (cicle =107) then
-        next_count2<=0;
-    end if;
-    
-    if (cicle =106) then 
-        aux_sample_out <= std_logic_vector(to_unsigned(count2,sample_size));
-    elsif (cicle= 256) then
-        aux_sample_out <= std_logic_vector(to_unsigned(count1,sample_size));
-    end if;
-    end if;
+    case (state) is
+    when S0 =>
+        aux_sample_out<=(others=>'0');
+        
+    when S1=>
+        next_count1<=count1+aux_micro_data;
+        next_count2<=count2+aux_micro_data;
+        
+    when S2=>
+        next_count1<=count1+aux_micro_data;
+        aux_sample_out<=std_logic_vector(count2);
+        
+    when S3=> 
+        next_count1<=count1+aux_micro_data;
+        next_count2<=count2+aux_micro_data;
+           
+    when S4 =>
+        next_count2<=count2+aux_micro_data;
+        aux_sample_out<=std_logic_vector(count1);
+    end case;
 end process;
 
-process(clk_12megas, reset)
-begin
-if (reset='1') then
-aux_sample_out_ready<='0';
-else
-  if (cicle=105 or cicle = 255) then
-  flag <='1';
-  end if;
-  
-  if (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-    if (cicle = 106 or cicle = 256) then
-        if(flag='1') then
-        flag<='0';
-        aux_sample_out_ready<='1';
-        else
-        aux_sample_out_ready<='0';
-        end if;
-    else
-        aux_sample_out_ready<='0';
-   end if;
-    end if;
-end if;
-end process;
+aux_micro_data <= 
+    to_unsigned(1,1) when (micro_data='1') else
+    to_unsigned(0,1);
+
 sample_out_ready<=aux_sample_out_ready;
 sample_out<=aux_sample_out;
 end Behavioral;
