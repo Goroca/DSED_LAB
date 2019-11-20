@@ -33,13 +33,12 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity pwm is
-port(clk_12megas: in std_logic;
-reset: in std_logic;
-en_2_cycles: in std_logic;
-sample_in: in std_logic_vector(sample_size-1 downto 0);
-sample_request: out std_logic;
-pwm_pulse: out std_logic
-);
+    port( clk_12megas: in std_logic;
+          reset: in std_logic;
+          en_2_cycles: in std_logic;
+          sample_in: in std_logic_vector(sample_size-1 downto 0);
+          sample_request: out std_logic;
+          pwm_pulse: out std_logic);
 end pwm;
 
 
@@ -48,6 +47,7 @@ signal r_reg : unsigned (sample_size-1 downto 0);
 signal r_next : unsigned (sample_size-1 downto 0);
 signal buff:  std_logic;
 signal next_buff:  std_logic;
+constant MAX_CUENTA : unsigned (sample_size-1 downto 0) := (others => '1');
 
 begin
 
@@ -56,7 +56,7 @@ begin
     if (reset ='1') then
         buff<='0';
         r_reg<= (others=>'0');
-    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
+    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE and en_2_cycles=SAMPLE_CLK_EDGE) then
         buff<=next_buff;
         r_reg<= r_next;
     end if;
@@ -66,6 +66,10 @@ r_next<=r_reg+1;
 
 next_buff <= 
     '1' when (r_reg<unsigned(sample_in) or sample_in="0000000") else
+    '0';
+    
+sample_request <=
+    '1' when (r_reg = MAX_CUENTA) else
     '0';
     
 pwm_pulse<= buff;
