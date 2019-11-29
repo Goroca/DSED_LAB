@@ -72,8 +72,8 @@ cicle<= to_unsigned(0,9);
 state<=S0;
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
     if(enable_4_cycles='1') then
-        count1<= next_count1+1;
-        count2<= next_count2+1;
+        count1<= next_count1;
+        count2<= next_count2;
         state<=next_state;
         cicle<= next_cicle;      
     end if;
