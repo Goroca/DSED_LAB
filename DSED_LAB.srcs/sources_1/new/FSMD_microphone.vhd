@@ -46,16 +46,17 @@ architecture Behavioral of FSMD_microphone is
 type state_type is (S0,S1,S2,S3,S4);
 signal state, next_state : state_type;
 
-signal next_cicle : unsigned (8 downto 0):= to_unsigned(0,9);
-signal cicle :      unsigned (8 downto 0):= to_unsigned(0,9);
+signal last_EN : std_logic := '0';
+signal next_cicle : unsigned (8 downto 0):= (others=>'0');
+signal cicle :      unsigned (8 downto 0):= (others=>'0');
 
 --Numero unos
-signal count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
-signal count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
-signal next_count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
-signal next_count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
-signal aux_count1 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
-signal aux_count2 : unsigned (sample_size-1 downto 0) := to_unsigned(0,sample_size);
+signal count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
+signal count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
+signal next_count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
+signal next_count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
+signal aux_count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
+signal aux_count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal aux_micro_data : unsigned (0 downto 0);
 
 signal aux_sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0);
@@ -71,20 +72,19 @@ count2<= to_unsigned(0,sample_size);
 cicle<= to_unsigned(0,9);
 state<=S0;
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-    if(enable_4_cycles='1') then
+        last_EN<=enable_4_cycles;
         count1<= next_count1;
         count2<= next_count2;
         state<=next_state;
         cicle<= next_cicle;      
-    end if;
 end if;
 end process;
 
-process(cicle)
+process(cicle,enable_4_cycles)
 begin
 if(cicle = 299) then
 next_cicle <= to_unsigned(0,9);
-else 
+elsif(enable_4_cycles='1' and last_EN<='0') then
 next_cicle<= cicle +1;
 end if;
 end process;
@@ -94,6 +94,7 @@ begin
 next_state <= S0;
     case(state) is
         when S0 =>
+            aux_sample_out<=(others=>'0');
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
@@ -107,6 +108,7 @@ next_state <= S0;
               aux_sample_out_ready<='0';
             elsif(cicle>105) then
               next_state<=S2;
+              aux_sample_out<=std_logic_vector(count2);
               aux_sample_out_ready<='1';
             else
               next_state<=S1;
@@ -131,6 +133,7 @@ next_state <= S0;
               aux_sample_out_ready<='0';
             elsif(cicle>255) then
               next_state<=S4;
+              aux_sample_out<=std_logic_vector(count1);
               aux_sample_out_ready<='1';
             else
               next_state<=S3;
@@ -152,11 +155,11 @@ next_state <= S0;
 end process;
 
     
-OUTPUT_DECODE_MOORE : process (state, micro_data,count1,count2,aux_micro_data)
+OUTPUT_DECODE_MOORE : process (last_EN,enable_4_cycles,state, micro_data,count1,count2,aux_micro_data)
 begin
+    if(enable_4_cycles='1' and last_EN<='0') then
     case (state) is
     when S0 =>
-        aux_sample_out<=(others=>'0');
         
     when S1=>
         next_count1<=count1+aux_micro_data;
@@ -164,7 +167,7 @@ begin
         
     when S2=>
         next_count1<=count1+aux_micro_data;
-        aux_sample_out<=std_logic_vector(count2);
+        next_count2<= (others=>'0');
         
     when S3=> 
         next_count1<=count1+aux_micro_data;
@@ -172,14 +175,14 @@ begin
            
     when S4 =>
         next_count2<=count2+aux_micro_data;
-        aux_sample_out<=std_logic_vector(count1);
+        next_count1<= (others=>'0');
     end case;
+    end if;
 end process;
 
 aux_micro_data <= 
     to_unsigned(1,1) when (micro_data='1') else
     to_unsigned(0,1);
-
 sample_out_ready<=aux_sample_out_ready;
 sample_out<=aux_sample_out;
 end Behavioral;

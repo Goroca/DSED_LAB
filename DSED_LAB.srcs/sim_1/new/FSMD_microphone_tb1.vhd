@@ -52,9 +52,7 @@ signal micro_data : STD_LOGIC := '0';
 signal sample_out : STD_LOGIC_VECTOR (8-1 downto 0) := "00000000";
 signal sample_out_ready : STD_LOGIC := '0';
 -- CLK period definition
-constant CLK_PERIOD1 : time := 83 ns;
-constant CLK_PERIOD2 : time := 333 ns;
-
+constant CLK_PERIOD : time := 83 ns;
 begin
 
 -- DUT declaration
@@ -70,17 +68,18 @@ UUT: FSMD_microphone
 clk_process: process
 begin
     clk_12megas <= '0';
-    wait for CLK_PERIOD1/2;
+    wait for CLK_PERIOD/2;
     clk_12megas <= '1';
-    wait for CLK_PERIOD1/2;
+    wait for CLK_PERIOD/2;
 end process;
 
 clk_process2: process
 begin
-    enable_4_cycles <= '0';
-    wait for CLK_PERIOD2/2;
     enable_4_cycles <= '1';
-    wait for CLK_PERIOD2/2;
+    wait for CLK_PERIOD*4/4;
+    enable_4_cycles <= '0';
+    wait for CLK_PERIOD*3*4/4;
+
 end process;
 
 micro_data<='1';
