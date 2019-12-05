@@ -43,6 +43,9 @@ end pwm;
 
 
 architecture Behavioral of pwm is
+
+signal last_EN : std_logic := '0';
+
 signal r_reg : unsigned (sample_size-1 downto 0);
 signal r_next : unsigned (sample_size-1 downto 0);
 signal buff:  std_logic;
@@ -55,15 +58,20 @@ process(clk_12megas,reset)
 begin
     if (reset ='1') then
         buff<='0';
+        last_EN<='0';
         r_reg<= (others=>'0');
-    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE and en_2_cycles=SAMPLE_CLK_EDGE) then
+    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
+        last_EN<=en_2_cycles;
         buff<=next_buff;
         r_reg<= r_next;
     end if;
 end process;
-
+process(r_reg,en_2_cycles)
+begin
+if (en_2_cycles='1' and last_EN='0') then
 r_next<=r_reg+1;
-
+end if;
+end process;
 next_buff <= 
     '1' when (r_reg<unsigned(sample_in) or sample_in="0000000") else
     '0';

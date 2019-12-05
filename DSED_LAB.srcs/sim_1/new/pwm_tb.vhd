@@ -81,6 +81,13 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
+EN: process
+begin
+    en_2_cycles <= '1';
+    wait for CLK_PERIOD*2/2;
+    en_2_cycles <= '0';
+    wait for CLK_PERIOD*2/2;
+end process;
 -- Stimulus process
 stim_process: process
 begin

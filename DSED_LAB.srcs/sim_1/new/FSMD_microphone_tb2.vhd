@@ -53,7 +53,7 @@ signal sample_out : STD_LOGIC_VECTOR (8-1 downto 0) := "00000000";
 signal sample_out_ready : STD_LOGIC := '0';
 -- CLK period definition
 constant CLK_PERIOD : time := 83 ns;
-
+ 
 begin
 
 -- DUT declaration

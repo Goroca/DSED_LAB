@@ -67,10 +67,11 @@ begin
 process (clk_12megas,reset)
 begin
 if reset = '1' then
-count1<= (others=>'0');
-count2<= (others=>'0');
-cicle<= to_unsigned(0,9);
-state<=S0;
+    count1<= (others=>'0');
+    count2<= (others=>'0');
+    cicle<= to_unsigned(0,9);
+    last_EN<='0';
+    state<=S0;
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
         last_EN<=enable_4_cycles;
         count1<= next_count1;

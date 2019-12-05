@@ -73,7 +73,7 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
-clk_process2: process
+EN_process: process
 begin
     enable_4_cycles <= '1';
     wait for CLK_PERIOD*4/4;
