@@ -67,8 +67,8 @@ begin
 process (clk_12megas,reset)
 begin
 if reset = '1' then
-count1<= to_unsigned(0,sample_size);
-count2<= to_unsigned(0,sample_size);
+count1<= (others=>'0');
+count2<= (others=>'0');
 cicle<= to_unsigned(0,9);
 state<=S0;
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
@@ -163,14 +163,18 @@ begin
         
     when S1=>
         next_count1<=count1+aux_micro_data;
+        if (count2<255) then
         next_count2<=count2+aux_micro_data;
+        end if;
         
     when S2=>
         next_count1<=count1+aux_micro_data;
         next_count2<= (others=>'0');
         
     when S3=> 
+        if(count1<255) then
         next_count1<=count1+aux_micro_data;
+        end if;
         next_count2<=count2+aux_micro_data;
            
     when S4 =>
