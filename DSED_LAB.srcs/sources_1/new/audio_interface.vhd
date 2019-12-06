@@ -52,8 +52,8 @@ component en_4_cycles
     Port ( clk_12megas : in STD_LOGIC;
            reset : in STD_LOGIC;
            clk_3megas : out STD_LOGIC;
-           en_2_ciclos : out STD_LOGIC;
-           en_4_ciclos : out STD_LOGIC);
+           en_2_cycles : out STD_LOGIC;
+           en_4_cycles : out STD_LOGIC);
 end component;
 
 component FSMD_microphone
@@ -75,9 +75,11 @@ component pwm
 end component;
 
 -- señales auxiliares
+signal aux1, aux2 : STD_LOGIC;
 signal aux_en_2_ciclos, aux_en_4_ciclos : STD_LOGIC;
 
 begin
+
 
 -- Unities declaration
 U1: en_4_cycles
@@ -85,9 +87,12 @@ U1: en_4_cycles
         clk_12megas => clk_12megas,
         reset => reset,
         clk_3megas => micro_clk,
-        en_2_ciclos => aux_en_2_ciclos,
-        en_4_ciclos => aux_en_4_ciclos);
+        en_2_cycles => aux1,
+        en_4_cycles => aux2);
         
+aux_en_2_ciclos <= aux1 and play_enable;
+aux_en_4_ciclos <= aux2 and record_enable;
+
 U2: FSMD_microphone
     port map(
         clk_12megas => clk_12megas,
@@ -96,6 +101,7 @@ U2: FSMD_microphone
         micro_data => micro_data,
         sample_out => sample_out, 
         sample_out_ready => sample_out_ready);
+
 
 U3: pwm
     port map(

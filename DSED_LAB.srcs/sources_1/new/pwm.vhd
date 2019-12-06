@@ -21,16 +21,9 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use work.package_dsed.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use work.package_dsed.all;
 
 entity pwm is
     port( clk_12megas: in std_logic;
@@ -44,12 +37,10 @@ end pwm;
 
 architecture Behavioral of pwm is
 
-signal last_EN : std_logic := '0';
-
-signal r_reg : unsigned (sample_size-1 downto 0);
-signal r_next : unsigned (sample_size-1 downto 0);
-signal buff:  std_logic;
-signal next_buff:  std_logic;
+signal r_reg : unsigned (sample_size-1 downto 0) := (others => '0');
+signal r_next : unsigned (sample_size-1 downto 0) := (others => '0');
+signal buff:  std_logic := '0';
+signal next_buff:  std_logic := '0';
 constant MAX_CUENTA : unsigned (sample_size-1 downto 0) := (others => '1');
 
 begin
@@ -58,20 +49,20 @@ process(clk_12megas,reset)
 begin
     if (reset ='1') then
         buff<='0';
-        last_EN<='0';
         r_reg<= (others=>'0');
-    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-        last_EN<=en_2_cycles;
+    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE and en_2_cycles=SAMPLE_CLK_EDGE) then
         buff<=next_buff;
         r_reg<= r_next;
     end if;
 end process;
-process(r_reg,en_2_cycles)
+
+process(en_2_cycles)
 begin
-if (en_2_cycles='1' and last_EN='0') then
-r_next<=r_reg+1;
-end if;
+    if (en_2_cycles'event and en_2_cycles='1') then
+        r_next<=r_reg+1;
+    end if;
 end process;
+
 next_buff <= 
     '1' when (r_reg<unsigned(sample_in) or sample_in="0000000") else
     '0';

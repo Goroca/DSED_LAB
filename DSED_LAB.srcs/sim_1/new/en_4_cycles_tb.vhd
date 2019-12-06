@@ -42,8 +42,8 @@ component en_4_cycles
     Port ( clk_12megas : in STD_LOGIC;
            reset : in STD_LOGIC;
            clk_3megas : out STD_LOGIC;
-           en_2_ciclos : out STD_LOGIC;
-           en_4_ciclos : out STD_LOGIC);
+           en_2_cycles : out STD_LOGIC;
+           en_4_cycles : out STD_LOGIC);
 end component;
 
 -- input signals declaration
@@ -63,8 +63,8 @@ UUT: en_4_cycles
         clk_12megas => clk_12megas,
         reset => reset,
         clk_3megas => clk_3megas,
-        en_2_ciclos => en_2_ciclos,
-        en_4_ciclos => en_4_ciclos);
+        en_2_cycles => en_2_ciclos,
+        en_4_cycles => en_4_ciclos);
 
 -- CLK process definition (50% duty cycle)
 clk_process: process

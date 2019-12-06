@@ -22,10 +22,10 @@ use work.package_dsed.all;
 
 entity en_4_cycles is
     Port ( clk_12megas : in STD_LOGIC;
-           reset : in STD_LOGIC;
-           clk_3megas : out STD_LOGIC;
-           en_2_ciclos : out STD_LOGIC;
-           en_4_ciclos : out STD_LOGIC);
+           reset : in STD_LOGIC;       
+           clk_3megas : out STD_LOGIC; 
+           en_2_cycles : out STD_LOGIC;
+           en_4_cycles : out STD_LOGIC);
 end en_4_cycles;
 
 architecture Behavioral of en_4_cycles is
@@ -97,8 +97,8 @@ end process;
 
 -- actualización de las salidas
 clk_3megas <= current_state_clk_3megas;
-en_4_ciclos <= current_state_en_4_ciclos;
-en_2_ciclos <= current_state_en_2_ciclos;
+en_4_cycles <= current_state_en_4_ciclos;
+en_2_cycles <= current_state_en_2_ciclos;
 
 
 end Behavioral;

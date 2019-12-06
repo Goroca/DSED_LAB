@@ -77,16 +77,15 @@ begin
     clk_12megas <= '0';
     wait for CLK_PERIOD/2;
     clk_12megas <= '1';
-    en_2_cycles <= not en_2_cycles;
     wait for CLK_PERIOD/2;
 end process;
 
 EN: process
 begin
-    en_2_cycles <= '1';
-    wait for CLK_PERIOD*2/2;
     en_2_cycles <= '0';
-    wait for CLK_PERIOD*2/2;
+    wait for CLK_PERIOD;
+    en_2_cycles <= '1';
+    wait for CLK_PERIOD;
 end process;
 -- Stimulus process
 stim_process: process
