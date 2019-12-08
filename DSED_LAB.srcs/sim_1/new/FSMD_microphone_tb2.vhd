@@ -26,11 +26,11 @@ use IEEE.NUMERIC_STD.ALL;
 use work.package_dsed.all;
 
 
-entity FSMD_microphone_tb is
+entity FSMD_microphone_tb2 is
 --  Port ( );
-end FSMD_microphone_tb;
+end FSMD_microphone_tb2;
 
-architecture Behavioral of FSMD_microphone_tb is
+architecture Behavioral of FSMD_microphone_tb2 is
 
 component FSMD_microphone is
     Port ( clk_12megas : in STD_LOGIC;
