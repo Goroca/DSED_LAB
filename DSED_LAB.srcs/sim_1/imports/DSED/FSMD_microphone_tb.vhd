@@ -21,36 +21,34 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use work.package_dsed.all;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
-entity FSMD_microphone_tb1 is
+entity FSMD_microphone_tb is
 --  Port ( );
-end FSMD_microphone_tb1;
+end FSMD_microphone_tb;
 
-architecture Behavioral of FSMD_microphone_tb1 is
+architecture Behavioral of FSMD_microphone_tb is
 
 component FSMD_microphone is
-Port ( clk_12megas : in STD_LOGIC;
-reset : in STD_LOGIC;
-enable_4_cycles : in STD_LOGIC;
-micro_data : in STD_LOGIC;
-sample_out : out STD_LOGIC_VECTOR (8-1 downto 0);
-sample_out_ready : out STD_LOGIC);
+    Port ( clk_12megas : in STD_LOGIC;
+           reset : in STD_LOGIC;
+           enable_4_cycles : in STD_LOGIC;
+           micro_data : in STD_LOGIC;
+           sample_out : out STD_LOGIC_VECTOR (sample_size-1 downto 0);
+           sample_out_ready : out STD_LOGIC);
 end component;
+
+-- signal definitions
 signal clk_12megas : STD_LOGIC := '0';
 signal reset : STD_LOGIC := '0';
 signal enable_4_cycles : STD_LOGIC := '0';
 signal micro_data : STD_LOGIC := '0';
-signal sample_out : STD_LOGIC_VECTOR (8-1 downto 0) := "00000000";
+signal sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0) := (others=>'0');
 signal sample_out_ready : STD_LOGIC := '0';
+
 -- CLK period definition
 constant CLK_PERIOD : time := 83 ns;
 begin
@@ -63,7 +61,8 @@ UUT: FSMD_microphone
         enable_4_cycles=> enable_4_cycles,
         micro_data=> micro_data,
         sample_out=> sample_out,
-        sample_out_ready=> sample_out_ready);
+        sample_out_ready=> sample_out_ready
+    );
         
 clk_process: process
 begin
@@ -75,13 +74,23 @@ end process;
 
 EN_process: process
 begin
-    enable_4_cycles <= '1';
-    wait for CLK_PERIOD*4/4;
     enable_4_cycles <= '0';
-    wait for CLK_PERIOD*3*4/4;
+    wait for CLK_PERIOD*3;
+    enable_4_cycles <= '1';
+    wait for CLK_PERIOD;
 
 end process;
 
-micro_data<='1';
-
+data_process: process
+begin
+    --reset <= '1';
+    wait for 100 ns;
+    micro_data <= '1';
+    wait for 400 ns;
+    micro_data <= '0';
+    wait for 1000 ns;
+    micro_data <= '1';
+    wait for 800 ns;
+    micro_data <= '0';
+end process;
 end Behavioral;
