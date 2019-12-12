@@ -155,7 +155,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cycle=0) then           --antes ponía cycle<255
+            elsif(cycle=0) then           
               next_state<=S1;
               aux_sample_out_ready<='0';
             else
@@ -166,7 +166,7 @@ next_state <= S0;
 end process;
 
     
-OUTPUT_DECODE_MOORE : process (last_EN,enable_4_cycles,state, micro_data,count1,count2,aux_micro_data)
+COUNT : process (last_EN,enable_4_cycles,state, micro_data,count1,count2,aux_micro_data)
 begin
     if(enable_4_cycles='1' and last_EN<='0') then
     case (state) is
