@@ -80,13 +80,13 @@ elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
 end if;
 end process;
 
-process(cycle,enable_4_cycles)
+process(cycle,enable_4_cycles,reset)
 begin
-if(cycle = 299) then
+if(reset='1')then
+   first_cycle<='0';
+elsif(cycle = 299) then
     next_cycle <= to_unsigned(0,9);
-    if (first_cycle='0') then
-        first_cycle<='1';
-    end if;
+    first_cycle<='1';
 elsif(enable_4_cycles='1' and last_EN<='0') then
     next_cycle<= cycle +1;
 end if;
@@ -155,7 +155,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cycle>=299) then           --antes ponía cycle<255
+            elsif(cycle=0) then           --antes ponía cycle<255
               next_state<=S1;
               aux_sample_out_ready<='0';
             else
