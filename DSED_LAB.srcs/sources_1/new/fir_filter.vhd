@@ -41,7 +41,6 @@ filter_select: in STD_LOGIC; --0 lowpass, 1 highpass
 Sample_Out : out signed (sample_size-1 downto 0);
 Sample_Out_ready : out STD_LOGIC);
 end fir_filter;
-;
 
 architecture Behavioral of fir_filter is
 
