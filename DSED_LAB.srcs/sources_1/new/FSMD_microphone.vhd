@@ -47,16 +47,15 @@ type state_type is (S0,S1,S2,S3,S4);
 signal state, next_state : state_type;
 
 signal last_EN : std_logic := '0';
-signal next_cicle : unsigned (8 downto 0):= (others=>'0');
-signal cicle :      unsigned (8 downto 0):= (others=>'0');
+signal first_cycle : std_logic := '0'; 
+signal next_cycle : unsigned (8 downto 0):= (others=>'0');
+signal cycle :      unsigned (8 downto 0):= (others=>'0');
 
 --Numero unos
 signal count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal next_count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal next_count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
-signal aux_count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
-signal aux_count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal aux_micro_data : unsigned (0 downto 0);
 
 signal aux_sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0);
@@ -66,31 +65,34 @@ begin
 
 process (clk_12megas,reset)
 begin
-if reset = '1' then
+if (reset = '1') then
     count1<= (others=>'0');
     count2<= (others=>'0');
-    cicle<= to_unsigned(0,9);
+    cycle<= to_unsigned(0,9);
     last_EN<='0';
     state<=S0;
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-        last_EN<=enable_4_cycles;
-        count1<= next_count1;
-        count2<= next_count2;
-        state<=next_state;
-        cicle<= next_cicle;      
+    last_EN<=enable_4_cycles;
+    count1<= next_count1;
+    count2<= next_count2;
+    state<=next_state;
+    cycle<= next_cycle;      
 end if;
 end process;
 
-process(cicle,enable_4_cycles)
+process(cycle,enable_4_cycles,reset)
 begin
-if(cicle = 299) then
-next_cicle <= to_unsigned(0,9);
+if(reset='1')then
+   first_cycle<='0';
+elsif(cycle = 299) then
+    next_cycle <= to_unsigned(0,9);
+    first_cycle<='1';
 elsif(enable_4_cycles='1' and last_EN<='0') then
-next_cicle<= cicle +1;
+    next_cycle<= cycle +1;
 end if;
 end process;
 
-NEXT_STATE_DECODE : process (state,cicle,reset)
+NEXT_STATE_DECODE : process (state,cycle,reset)
 begin
 next_state <= S0;
     case(state) is
@@ -107,10 +109,18 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cicle>105) then
-              next_state<=S2;
-              aux_sample_out<=std_logic_vector(count2);
-              aux_sample_out_ready<='1';
+            elsif(cycle>105) then
+              if (first_cycle='1') then
+                next_state<=S2;
+                aux_sample_out<=std_logic_vector(count2);
+                aux_sample_out_ready<='1';
+              elsif(cycle>149) then
+                next_state<=S3;
+                aux_sample_out_ready<='0';
+              else
+                next_state<=S1;
+                aux_sample_out_ready<='0';
+              end if;
             else
               next_state<=S1;
               aux_sample_out_ready<='0';
@@ -120,7 +130,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cicle>149) then
+            elsif(cycle>149) then
               next_state<=S3;
               aux_sample_out_ready<='0';
             else
@@ -132,7 +142,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cicle>255) then
+            elsif(cycle>255) then
               next_state<=S4;
               aux_sample_out<=std_logic_vector(count1);
               aux_sample_out_ready<='1';
@@ -145,7 +155,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cicle<255) then
+            elsif(cycle=0) then           
               next_state<=S1;
               aux_sample_out_ready<='0';
             else
@@ -156,16 +166,17 @@ next_state <= S0;
 end process;
 
     
-OUTPUT_DECODE_MOORE : process (last_EN,enable_4_cycles,state, micro_data,count1,count2,aux_micro_data)
+COUNT : process (last_EN,enable_4_cycles,state, micro_data,count1,count2,aux_micro_data)
 begin
     if(enable_4_cycles='1' and last_EN<='0') then
     case (state) is
     when S0 =>
-        
+        next_count1 <= (others=>'0');
+        next_count2 <= (others=>'0');
     when S1=>
         next_count1<=count1+aux_micro_data;
-        if (count2<255) then
-        next_count2<=count2+aux_micro_data;
+        if (count2<255 and first_cycle='1') then
+            next_count2<=count2+aux_micro_data;
         end if;
         
     when S2=>
