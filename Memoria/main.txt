@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{hyperref} 
+\usepackage[utf8x]{inputenc}
+\usepackage[spanish]{babel} 
+\usepackage{libertine}
+
+\setcounter{tocdepth}{2}
+
+% Necesitamos los paquetes graphicx, caption y subcaption
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage[spanish]{babel}
+
+\usepackage{enumitem}
+
+\usepackage{vmargin}
+
+\setpapersize{A4}
+\setmargins{2.5cm}      % margen izquierdo
+{1.5cm}                 % margen superior
+{16.5cm}                % anchura del texto
+{23.42cm}               % altura del texto
+{10pt}                  % altura de los encabezados
+{1cm}                   % espacio entre el texto y los encabezados
+{0pt}                   % altura del pie de página
+{2cm}
+
+\title{Memoria DSED PROYECTO FINAL}
+
+\author{Carlos Gómez Rodríguez y Alejandro Ramos Martín}
+
+\date{15 de Diciembre, 2019}
+
+\begin{document}
+
+\maketitle
+Hola
+\end{document}
