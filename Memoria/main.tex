@@ -47,7 +47,7 @@
 \section{Bloque 1: Interfaz de audio}
 
 \subsection{Tarea 1.1:}
-\paragraph{Diseña un circuito que sea capaz de generar las señales especificadas. Dibuja el esquemático correspondiente a tu diseño en el espacio inferior.}
+Diseña un circuito que sea capaz de generar las señales especificadas. Dibuja el esquemático correspondiente a tu diseño en el espacio inferior.
 
 \subsection{Tarea 1.2:}
 Implementa tu diseño en VHDL.
@@ -73,7 +73,7 @@ Realiza un testbench que tenga la señal micro data fija a '1' para comprobar qu
 Realiza un testbench que introduzca una se˜nal pseudo-aleatoria en micro data y comprueba que la digitalización se realiza correctamente.
 
 \subsection{Tarea 1.8:}
-Modifica el diseño propuesto en el libro del Dr. Chu para que sea compatible con las especificaciones de nuestro sistema. Es decir, que el contador cuente de 0 a 299 e incluya reset y enable y que el circuito produzca la salida sample request en el momento apropiado y con la duración apropiada. Dibuja el esquem´atico de tu diseño en la parte inferior.
+Modifica el diseño propuesto en el libro del Dr. Chu para que sea compatible con las especificaciones de nuestro sistema. Es decir, que el contador cuente de 0 a 299 e incluya reset y enable y que el circuito produzca la salida sample request en el momento apropiado y con la duración apropiada. Dibuja el esquemático de tu diseño en la parte inferior.
 
 \subsection{Tarea 1.9:}
 Implementa el esquemático anterior en un fichero VHDL.
@@ -100,7 +100,7 @@ Diseña un testbench que verifique la funcionalidad del controlador. Puedes util
 
 \subsection{Tarea 1.16:}
 
-Escribe el fichero de restricciones .xdc. Sintetiza y realiza la implementaci´on física del diseño. Genera el fichero .bit y programa la FPGA. Comprueba el funcionamiento correcto conectando unos auriculares a la salida de audio de la placa. Si la salida de audio es muy ruidosa, puedes jugar con el valor de micro LR y ponerlo a ’0’ en lugar de a '1'.
+Escribe el fichero de restricciones .xdc. Sintetiza y realiza la implementación física del diseño. Genera el fichero .bit y programa la FPGA. Comprueba el funcionamiento correcto conectando unos auriculares a la salida de audio de la placa. Si la salida de audio es muy ruidosa, puedes jugar con el valor de micro LR y ponerlo a ’0’ en lugar de a '1'.
 Guarda en un fichero de texto todos los mensajes de warning que hayan aparecido en el proceso anterior.
 Avisa al profesor para comprobar el funcionamiento.
 
@@ -116,7 +116,7 @@ Avisa al profesor para comprobar el funcionamiento.
 
 \newpage
 \subsection{Tarea 2.2:}
-Realiza sobre papel la implementaci´on de un filtro FIR de 5 etapas con la siguiente asignación: Dos medios multiplicadores y un sumador. Realiza todos los pasos descritos en la sección 6.4.
+Realiza sobre papel la implementación de un filtro FIR de 5 etapas con la siguiente asignación: Dos medios multiplicadores y un sumador. Realiza todos los pasos descritos en la sección 6.4.
 
 \paragraph{ Planificación temporal}
 
@@ -129,21 +129,37 @@ Realiza sobre papel la implementaci´on de un filtro FIR de 5 etapas con la sigu
 \includegraphics[width=0.85\linewidth]{images/2_2_1.png}
 \end{figure}
 
+
 \paragraph{Análisis de conexiones para la extracción de multiplexores:}
 
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{images/2_2_2.png}
+\end{figure}
+
+\newpage
 
 \paragraph{Cronograma:}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{images/2_2_2.png}
+\includegraphics[width=1\linewidth]{images/2_2_3.png}
 \end{figure}
+\paragraph{Implementación:}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\linewidth]{images/2_2_2.png}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[width=1\linewidth]{images/2_2_5.png}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.6\textwidth}
+  \includegraphics[width=1\linewidth]{images/2_2_6.png}
+  \label{fig:sub2}
+\end{subfigure}
 \end{figure}
-\paragraph{Implementación:}
 
 \subsection{Tarea 2.3:}
 
@@ -186,7 +202,7 @@ Cada línea del fichero se corresponde con un dato.
 
 \subsection{Tarea 2.12:}
 
-Utiliza el fichero “haha.wav” en Matlab para crear un fichero de entrada para tu testbench. En el ap´endice 2 se detallan las secuencias que tienes que emplear en Matlab para:
+Utiliza el fichero “haha.wav” en Matlab para crear un fichero de entrada para tu testbench. En el apéndice 2 se detallan las secuencias que tienes que emplear en Matlab para:
 Cargar un fichero de audio en Matlab y crear otro fichero con el formato necesario para tu testbench.
 Utilizar la función filter de Matlab para obtener la respuesta de un filtro FIR con precisión real.
 Cargar y escuchar la salida que ha producido tu testbench en Matlab.
@@ -204,7 +220,7 @@ Utiliza la función sound de Matlab para escuchar la forma de onda original. Com
 \subsection{Tarea 3.1:}
 Tarea 3.1:
 Crea un testbench que trabaje a la frecuencia del sistema para comprobar y entender el funcionamiento de la memoria encapsulada. Anota a continuación la función de cada
-puerto y la temporizaci´on de la memoria (un peque˜no cronograma que incluya una escritura y una lectura).
+puerto y la temporización de la memoria (un peque˜no cronograma que incluya una escritura y una lectura).
 
 \subsection{Tarea 3.2:}
 
