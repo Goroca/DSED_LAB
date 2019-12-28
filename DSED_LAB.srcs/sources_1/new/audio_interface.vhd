@@ -113,7 +113,8 @@ U3: pwm
         pwm_pulse => jack_pwm);
  
  -- signal output assignments
-micro_LR <= SAMPLE_CLK_EDGE;      
+--micro_LR <= SAMPLE_CLK_EDGE;
 jack_sd <= AUDIO_OP_CONTROL;
+micro_LR <= '0';            
 
 end Behavioral;

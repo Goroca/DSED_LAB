@@ -94,9 +94,9 @@ begin
     wait for 5 ns;
     reset <= '0';
     sample_in <= "00000100";
-    wait for 3 us;
+    wait for 50 us;
     sample_in <= "01001001";
-    wait for 3 us;
+    wait for 50 us;
     sample_in <= "10111010";
     wait;
 end process;

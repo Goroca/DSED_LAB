@@ -84,11 +84,13 @@ process(cycle,enable_4_cycles,reset)
 begin
 if(reset='1')then
    first_cycle<='0';
-elsif(cycle = 299) then
-    next_cycle <= to_unsigned(0,9);
-    first_cycle<='1';
 elsif(enable_4_cycles='1' and last_EN<='0') then
-    next_cycle<= cycle +1;
+    if (cycle = 299) then
+        next_cycle <= to_unsigned(0,9);
+        first_cycle<='1';
+    else
+        next_cycle<= cycle +1;
+    end if;
 end if;
 end process;
 
@@ -109,12 +111,14 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cycle>105) then
+--            elsif(cycle=105 and first_cycle='1') then
+--                next_state<=S2;
+            elsif (cycle > 105) then
               if (first_cycle='1') then
                 next_state<=S2;
                 aux_sample_out<=std_logic_vector(count2);
                 aux_sample_out_ready<='1';
-              elsif(cycle>149) then
+              elsif(cycle>=149) then
                 next_state<=S3;
                 aux_sample_out_ready<='0';
               else
@@ -130,7 +134,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cycle>149) then
+            elsif(cycle>=149) then
               next_state<=S3;
               aux_sample_out_ready<='0';
             else
@@ -142,7 +146,7 @@ next_state <= S0;
             if (reset='1') then
               next_state<=S0;
               aux_sample_out_ready<='0';
-            elsif(cycle>255) then
+            elsif (cycle > 255) then
               next_state<=S4;
               aux_sample_out<=std_logic_vector(count1);
               aux_sample_out_ready<='1';
@@ -192,6 +196,7 @@ begin
     when S4 =>
         next_count2<=count2+aux_micro_data;
         next_count1<= (others=>'0');
+        
     end case;
     end if;
 end process;

@@ -54,9 +54,9 @@ end component;
 
 -- señales de testing de entrada
 signal clk_12megas, reset : STD_LOGIC := '0';
-signal record_enable : STD_LOGIC := '0';
+signal record_enable : STD_LOGIC := '1';
 signal micro_data : STD_LOGIC := '0';
-signal play_enable : STD_LOGIC := '0';
+signal play_enable : STD_LOGIC := '1';
 signal sample_in : STD_LOGIC_VECTOR(sample_size-1 downto 0) := (others => '0');
 
 -- señales de testing de salida
@@ -106,5 +106,24 @@ begin
     wait;
 end process;
 
+micro_data_process: process
+begin
+    --reset <= '1';
+    wait for 100 ns;
+    micro_data <= '1';
+    wait for 400 ns;
+    micro_data <= '0';
+    wait for 1000 ns;
+    micro_data <= '1';
+    wait for 800 ns;
+    micro_data <= '0';
+end process;
+
+sample_in_process: process
+begin
+    wait for 200 ns;
+    sample_in <= "10000101";
+    wait;
+end process;
 
 end Behavioral;
