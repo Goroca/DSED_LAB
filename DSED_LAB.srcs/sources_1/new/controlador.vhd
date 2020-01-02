@@ -61,9 +61,9 @@ component audio_interface
            jack_pwm : out STD_LOGIC);
 end component;
 
+
 component clk_12MHz
     port (
-        reset : in std_logic;
         clk_in1 : in std_logic;
         clk_out1 : out std_logic
     );
@@ -71,12 +71,12 @@ end component;
 
 signal aux_clk_12MHz, aux_ready : STD_LOGIC;
 signal aux_sample : STD_LOGIC_VECTOR(sample_size-1 downto 0);
+signal aux_sample_out_ready, aux_sample_request : STD_LOGIC;
 
 begin
 
 U1: clk_12MHz
     port map (
-        reset => reset,
         clk_in1 => clk_100Mhz,
         clk_out1 => aux_clk_12MHz
     );
@@ -89,6 +89,7 @@ U2: audio_interface
         --To/From the controller
         record_enable => '1',
         sample_out => aux_sample,
+        sample_out_ready => OPEN,
         --To/From the microphone
         micro_clk => micro_clk,
         micro_data => micro_data,
@@ -97,6 +98,7 @@ U2: audio_interface
         --To/From the controller
         play_enable => '1',
         sample_in => aux_sample,
+        sample_request => OPEN,
         --To/From the mini-jack
         jack_sd => jack_sd,
         jack_pwm => jack_pwm
