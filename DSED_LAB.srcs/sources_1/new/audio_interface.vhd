@@ -35,14 +35,14 @@ entity audio_interface is
            --To/From the microphone
            micro_clk : out STD_LOGIC;
            micro_data : in STD_LOGIC;
-           micro_LR : out STD_LOGIC;
+           micro_LR : out STD_LOGIC := '0';
            --Playing ports
            --To/From the controller
            play_enable: in STD_LOGIC;
-           sample_in: in std_logic_vector(sample_size-1 downto 0);
-           sample_request: out std_logic;
+           sample_in: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
+           sample_request: out STD_LOGIC;
            --To/From the mini-jack
-           jack_sd : out STD_LOGIC;
+           jack_sd : out STD_LOGIC := '1';
            jack_pwm : out STD_LOGIC);
 end audio_interface;
 
@@ -75,25 +75,21 @@ component pwm
 end component;
 
 -- señales auxiliares
-signal aux1, aux2 : STD_LOGIC;
 signal aux_en_2_ciclos, aux_en_4_ciclos : STD_LOGIC;
 
 begin
 
 
 -- Unities declaration
-U1: en_4_cycles
+enable: en_4_cycles
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
         clk_3megas => micro_clk,
-        en_2_cycles => aux1,
-        en_4_cycles => aux2);
-        
-aux_en_2_ciclos <= aux1 and play_enable;
-aux_en_4_ciclos <= aux2 and record_enable;
+        en_2_cycles => aux_en_2_ciclos,
+        en_4_cycles => aux_en_4_ciclos);
 
-U2: FSMD_microphone
+microphone: FSMD_microphone
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
@@ -103,7 +99,7 @@ U2: FSMD_microphone
         sample_out_ready => sample_out_ready);
 
 
-U3: pwm
+audio: pwm
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
@@ -111,10 +107,6 @@ U3: pwm
         sample_in => sample_in, 
         sample_request => sample_request,
         pwm_pulse => jack_pwm);
- 
- -- signal output assignments
---micro_LR <= SAMPLE_CLK_EDGE;
-jack_sd <= AUDIO_OP_CONTROL;
-micro_LR <= '0';            
-
+            
 end Behavioral;
+

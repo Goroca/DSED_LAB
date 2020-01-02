@@ -42,7 +42,7 @@ signal r_reg : unsigned (sample_size downto 0) := (others => '0');
 signal r_next : unsigned (sample_size downto 0) := (others => '0');
 signal buff:  std_logic := '0';
 signal next_buff:  std_logic := '0';
-constant MAX_CUENTA : integer := 299;
+constant MAX_CUENTA : unsigned(sample_size downto 0) := "100101011";
 
 begin
 
@@ -53,9 +53,14 @@ begin
         r_reg<= (others=>'0');
         sample_request <= '0';
     elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-        if (en_2_cycles=SAMPLE_CLK_EDGE) then
-            buff<=next_buff;
-            r_reg<= r_next;
+        if(en_2_cycles='1') then
+            if (sample_in = "00000000") then
+                r_reg <= (others=>'0');
+                buff <= '0';
+            else
+                buff<=next_buff;
+                r_reg<= r_next;
+            end if;
         end if;
         
         if (r_reg = MAX_CUENTA and last_sample_request = '0') then
@@ -68,21 +73,20 @@ begin
     end if;
 end process;
 
-process(en_2_cycles)
+process(r_reg)
 begin
-    if (en_2_cycles'event and en_2_cycles='1') then
-        if (r_reg = 299) then
-            r_next<=(others=>'0');
-        else
-            r_next<=r_reg+1;
-        end if;
-    end if;
+     if (r_reg = 299) then
+         r_next<=(others=>'0');
+     else
+         r_next<=r_reg+1;
+     end if;
 end process;
 
 next_buff <= 
-    '1' when (r_reg<unsigned(sample_in) or sample_in="0000000") else
+    '1' when (r_reg<unsigned(sample_in) or sample_in="00000000") else
     '0';
     
 pwm_pulse<= buff;
 
 end Behavioral;
+

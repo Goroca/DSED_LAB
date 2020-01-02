@@ -86,7 +86,7 @@ begin
     reset <= '1';
     wait for 5 ns;
     reset <= '0';
-    wait for 50 us;
+    wait for 6 us;
     micro_data <= '1';
     wait;
 end process;

@@ -1,7 +1,7 @@
 -- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2017.2 (win64) Build 1909853 Thu Jun 15 18:39:09 MDT 2017
--- Date        : Wed Dec  4 10:31:43 2019
+-- Date        : Thu Jan  2 14:55:07 2020
 -- Host        : LAPTOP-FBKR70A7 running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               C:/Users/usuario/DSED_LAB/DSED_LAB.srcs/sources_1/ip/clk_12MHz/clk_12MHz_sim_netlist.vhdl
@@ -17,7 +17,6 @@ use UNISIM.VCOMPONENTS.ALL;
 entity clk_12MHz_clk_12MHz_clk_wiz is
   port (
     clk_out1 : out STD_LOGIC;
-    reset : in STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
@@ -160,7 +159,7 @@ mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
       PSEN => '0',
       PSINCDEC => '0',
       PWRDWN => '0',
-      RST => reset
+      RST => '0'
     );
 end STRUCTURE;
 library IEEE;
@@ -170,7 +169,6 @@ use UNISIM.VCOMPONENTS.ALL;
 entity clk_12MHz is
   port (
     clk_out1 : out STD_LOGIC;
-    reset : in STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
   attribute NotValidForBitStream : boolean;
@@ -182,7 +180,6 @@ begin
 inst: entity work.clk_12MHz_clk_12MHz_clk_wiz
      port map (
       clk_in1 => clk_in1,
-      clk_out1 => clk_out1,
-      reset => reset
+      clk_out1 => clk_out1
     );
 end STRUCTURE;
