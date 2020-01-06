@@ -19,28 +19,28 @@
 \contentsline {section}{\numberline {2}Bloque 2: Filtro FIR}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Tarea 2.1:}{5}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Tarea 2.2:}{6}{subsection.2.2}%
-\contentsline {paragraph}{ Planificaci\IeC {\'o}n temporal}{6}{section*.4}%
-\contentsline {paragraph}{Vinculaci\IeC {\'o}n, an\IeC {\'a}lisis de tiempo de vida de variables y asignaci\IeC {\'o}n de registros:}{7}{figure.caption.6}%
-\contentsline {paragraph}{An\IeC {\'a}lisis de conexiones para la extracci\IeC {\'o}n de multiplexores:}{7}{figure.caption.8}%
-\contentsline {paragraph}{Cronograma:}{9}{figure.caption.10}%
-\contentsline {paragraph}{Implementaci\IeC {\'o}n:}{9}{figure.caption.12}%
+\contentsline {paragraph}{ Planificaci\IeC {\'o}n temporal}{6}{section*.5}%
+\contentsline {paragraph}{Vinculaci\IeC {\'o}n, an\IeC {\'a}lisis de tiempo de vida de variables y asignaci\IeC {\'o}n de registros:}{7}{figure.caption.7}%
+\contentsline {paragraph}{An\IeC {\'a}lisis de conexiones para la extracci\IeC {\'o}n de multiplexores:}{7}{figure.caption.9}%
+\contentsline {paragraph}{Cronograma:}{9}{figure.caption.11}%
+\contentsline {paragraph}{Implementaci\IeC {\'o}n:}{9}{figure.caption.14}%
 \contentsline {subsection}{\numberline {2.3}Tarea 2.3:}{9}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Tarea 2.4:}{9}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}Tarea 2.5:}{9}{subsection.2.5}%
-\contentsline {subsection}{\numberline {2.6}Tarea 2.6:}{9}{subsection.2.6}%
-\contentsline {subsection}{\numberline {2.7}Tarea 2.7:}{9}{subsection.2.7}%
-\contentsline {subsection}{\numberline {2.8}Tarea 2.8:}{9}{subsection.2.8}%
-\contentsline {subsection}{\numberline {2.9}Tarea 2.9:}{9}{subsection.2.9}%
+\contentsline {subsection}{\numberline {2.5}Tarea 2.5:}{10}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Tarea 2.6:}{10}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Tarea 2.7:}{10}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Tarea 2.8:}{10}{subsection.2.8}%
+\contentsline {subsection}{\numberline {2.9}Tarea 2.9:}{10}{subsection.2.9}%
 \contentsline {subsection}{\numberline {2.10}Tarea 2.10:}{10}{subsection.2.10}%
 \contentsline {subsection}{\numberline {2.11}Tarea 2.11:}{10}{subsection.2.11}%
 \contentsline {subsection}{\numberline {2.12}Tarea 2.12:}{10}{subsection.2.12}%
 \contentsline {subsection}{\numberline {2.13}Tarea 2.13:}{10}{subsection.2.13}%
-\contentsline {subsection}{\numberline {2.14}Tarea 2.14:}{10}{subsection.2.14}%
-\contentsline {section}{\numberline {3}Bloque 3: Controlador y Memoria}{10}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Tarea 3.1:}{10}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Tarea 3.2:}{10}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Tarea 3.3:}{10}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Tarea 3.4:}{10}{subsection.3.4}%
+\contentsline {subsection}{\numberline {2.14}Tarea 2.14:}{11}{subsection.2.14}%
+\contentsline {section}{\numberline {3}Bloque 3: Controlador y Memoria}{11}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tarea 3.1:}{11}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Tarea 3.2:}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Tarea 3.3:}{11}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Tarea 3.4:}{11}{subsection.3.4}%
 \contentsline {subsection}{\numberline {3.5}Tarea 3.5:}{11}{subsection.3.5}%
 \contentsline {subsection}{\numberline {3.6}Tarea 3.6: }{11}{subsection.3.6}%
 \contentsline {subsection}{\numberline {3.7}Tarea 3.7 (Opcional):}{11}{subsection.3.7}%
