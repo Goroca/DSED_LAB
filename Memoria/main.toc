@@ -42,5 +42,5 @@
 \contentsline {subsection}{\numberline {3.3}Tarea 3.3:}{11}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Tarea 3.4:}{11}{subsection.3.4}%
 \contentsline {subsection}{\numberline {3.5}Tarea 3.5:}{11}{subsection.3.5}%
-\contentsline {subsection}{\numberline {3.6}Tarea 3.6: }{11}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.6}Tarea 3.6:}{11}{subsection.3.6}%
 \contentsline {subsection}{\numberline {3.7}Tarea 3.7 (Opcional):}{11}{subsection.3.7}%

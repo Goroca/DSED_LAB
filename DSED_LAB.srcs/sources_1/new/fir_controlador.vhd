@@ -45,7 +45,7 @@ end fir_controlador;
 
 architecture Behavioral of fir_controlador is
 
-signal state, next_state : std_logic_vector (2 downto 0);
+signal state, next_state : unsigned (2 downto 0);
 signal R1, R2, R3 : signed (sample_size-1 downto 0) := (others => '0');
 signal next_R1, next_R2, next_R3 : signed (sample_size-1 downto 0) := (others => '0');
 
@@ -93,6 +93,8 @@ if (reset = '1') then
     R2 <= (others => '0');
     R3 <= (others => '0');
 elsif (clk'event and clk='1' and windows='1') then
+    state <= next_state;
+    
     R1 <= next_R1;
     R2 <= next_R2;
     R3 <= next_R3;
@@ -125,6 +127,7 @@ next_x0 <= Sample_In;
 
 process(R1,R2,R3)
 begin
+next_state <= state + 1;
 next_R3 <= mul_out (7 + sample_size - 1  downto sample_size-1);
 
 case(state) is
@@ -140,7 +143,10 @@ case(state) is
     when "011" =>
         next_R1 <= sum_out;
     when "100" =>
-        next_R2 <= sum_out;  
+        next_R2 <= sum_out;
+    when others =>
+        next_R1 <= (others=>'0');
+        next_R2 <= (others=>'0');  
 end case;
 end process;
 

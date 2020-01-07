@@ -19,6 +19,7 @@
 \usepackage{enumitem}
 
 \usepackage{vmargin}
+\usepackage{amsmath}
 
 \setpapersize{A4}
 \setmargins{2.5cm}      % margen izquierdo
@@ -73,7 +74,7 @@ Implementa el diagrama anterior en un fichero VHDL.
 Realiza un testbench que tenga la señal micro data fija a '1' para comprobar que las transiciones de estados, la selección de los datos de salida y la activación de sample{\_}out{\_}ready se produce correctamente.
 
 \subsection{Tarea 1.7:}
-Realiza un testbench que introduzca una se˜nal pseudo-aleatoria en micro data y comprueba que la digitalización se realiza correctamente.
+Realiza un testbench que introduzca una señal pseudo-aleatoria en micro data y comprueba que la digitalización se realiza correctamente.
 
 \subsection{Tarea 1.8:}
 Modifica el diseño propuesto en el libro del Dr. Chu para que sea compatible con las especificaciones de nuestro sistema. Es decir, que el contador cuente de 0 a 299 e incluya reset y enable y que el circuito produzca la salida sample request en el momento apropiado y con la duración apropiada. Dibuja el esquemático de tu diseño en la parte inferior.
@@ -95,7 +96,7 @@ Diseña un testbench que verifique la funcionalidad de la interfaz de audio comp
 
 \subsection{Tarea 1.14:}
 
-Implementa en VHDL el controlador. Utiliza estilo estructural. Necesitas emplear el asistente arquitectural de Vivado para generar el reloj de 12 MHz a partir del rejol de 100 MHz.
+Implementa en VHDL el controlador. Utiliza estilo estructural. Necesitas emplear el asistente arquitectural de Vivado para generar el reloj de 12 MHz a partir del reloj de 100 MHz.
 
 \subsection{Tarea 1.15:}
 
@@ -227,27 +228,31 @@ Utiliza la función sound de Matlab para escuchar la forma de onda original. Com
 \subsection{Tarea 3.1:}
 Tarea 3.1:
 Crea un testbench que trabaje a la frecuencia del sistema para comprobar y entender el funcionamiento de la memoria encapsulada. Anota a continuación la función de cada
-puerto y la temporización de la memoria (un peque˜no cronograma que incluya una escritura y una lectura).
+puerto y la temporización de la memoria (un pequeño cronograma que incluya una escritura y una lectura).
 
 \subsection{Tarea 3.2:}
 
-Determina cuánto tiempo de grabación va a poder estar almacenado en la memoria.
+Determina cuánto tiempo de grabación va a poder estar almacenado en la memoria.\\
+
+El número de posiciones de la memoria es de 524288. En cada una de estás posiciones se almacena una muestra. Lo que hace que la memoria como máximo pueda almacenar 524288 muestras. En el apartado 1.2, se puede ver que se almacena una muestra cada 150 ciclos de reloj con un reloj de 3 MHz.
+\[ Tiempo \; Total = (Posiciones \; en \;memoria) * 150 \dfrac{ciclos}{muestra}* \dfrac{1}{f_{sistema}} \frac{s}{ciclo} \qquad Tiempo \; Total= 26.2 \;s\]
 
 \subsection{Tarea 3.3:}
-Determina qué operación es necesaria para hacer la transformación de las muestras de binaria a complemento a dos y de complemento a dos a binaria.
+Determina qué operación es necesaria para hacer la transformación de las muestras de binaria a complemento a dos y de complemento a dos a binaria.\\
+
+La operación a llevar a cabo para la conversión (tanto en signed -> unsigned como en unsigned) es cambiar el bit más significativo, a(7) = not ( a(7) ) y dejar el resto de bits (6 downto 0) igual.
 
 \subsection{Tarea 3.4:}
-A˜nade a continuación todas las hojas necesarias para describir tu dise˜no y la planificación para llevarlo a cabo. Puedes incluir diagramas esquemáticos, cronogramas explicativos, un plan de pruebas, una planificación temporal y todo lo que consideres necesario para explicar las decisiones que has tomado.
-Avisa al profesor antes de comenzar con el dise˜no para obtener el visto bueno.
+Añade a continuación todas las hojas necesarias para describir tu diseño y la planificación para llevarlo a cabo. Puedes incluir diagramas esquemáticos, cronogramas explicativos, un plan de pruebas, una planificación temporal y todo lo que consideres necesario para explicar las decisiones que has tomado.
+Avisa al profesor antes de comenzar con el diseño para obtener el visto bueno.
 
 \subsection{Tarea 3.5:}
 Avisa al profesor cuando tengas todas las especificaciones mínimas del sistema global cubiertas.
 
-\subsection{Tarea 3.6:
-}
+\subsection{Tarea 3.6:}
 Sube al Moodle un fichero .vhd con todas las fuentes de tu proyecto.
 
 \subsection{Tarea 3.7 (Opcional):}
-A˜nade a continuación todas las hojas necesarias para describir las mejoras que hayas implementado.
+Añade a continuación todas las hojas necesarias para describir las mejoras que hayas implementado.
 
 \end{document}
