@@ -32,7 +32,7 @@ apa=[1,0,0,0,0];
 semilogy(f,abs(hpa),'r')
 title('Filtro paso alto')
 pause
-% return
+%return
 
 
 % Filtramos y reproducimos fichero de entrada y salida del filtro.
@@ -47,12 +47,15 @@ sound(data_pb)
 pause
 data_pa=filter(bpa,apa,data);
 sound(data_pa)
-% pause
-return
+pause
+%return
 
 % Comparación de los datos con preción real de los filtrados con la placa.
-vhdlout=load('sample_out.dat')/127;
+vhdlout=load('C:\Users\usuario\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
 sound(vhdlout);
 
+data_filt=data_pb;
 error=data_filt-vhdlout;
 plot(error)
+title('Error respecto a precisión real')
+return

@@ -41,7 +41,8 @@ signal Sample_In : signed (sample_size-1 downto 0);
 signal Sample_Out : signed (sample_size-1 downto 0);
 signal int_Sample_Out : integer;
 
-signal Reset, filter_select : std_logic := '0';
+signal Reset : std_logic := '0';
+signal filter_select : std_logic := '0';
 signal Sample_In_enable : std_logic := '1';
 signal Sample_Out_ready : std_logic;
 
@@ -75,6 +76,14 @@ UUT: fir_filter
         Sample_Out => Sample_Out,
         Sample_Out_ready => Sample_Out_ready
     );
+
+--reset_process: process
+--begin
+--    Reset <= '1';
+--    wait for 50 ns;
+--    Reset <= '0';
+--    wait;
+--end process;
 
 read_process: process(clk)
     file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";

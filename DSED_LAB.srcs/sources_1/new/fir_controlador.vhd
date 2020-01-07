@@ -45,18 +45,17 @@ end fir_controlador;
 
 architecture Behavioral of fir_controlador is
 
-signal state, next_state : unsigned (2 downto 0);
+signal state, next_state : unsigned (2 downto 0) := (others=>'0');
 signal R1, R2, R3 : signed (sample_size-1 downto 0) := (others => '0');
 signal next_R1, next_R2, next_R3 : signed (sample_size-1 downto 0) := (others => '0');
 
-signal c0,c1,c2,c3,c4 : signed (sample_size-1 downto 0);
-signal x0,x1,x2,x3,x4 : signed (sample_size-1 downto 0);
-signal next_x0,next_x1,next_x2,next_x3,next_x4 : signed (sample_size-1 downto 0);
+signal c0, c1, c2, c3, c4 : signed (sample_size-1 downto 0) := (others=>'0');
+signal x0, x1, x2, x3, x4 : signed (sample_size-1 downto 0) := (others=>'0');
+signal next_x0, next_x1, next_x2, next_x3, next_x4 : signed (sample_size-1 downto 0) := (others=>'0');
 
-signal windows : STD_LOGIC;
-signal aux_Sample_Out_ready : STD_LOGIC;
-signal aux_mul_in0, aux_mul_in1 : signed (sample_size-1 downto 0);
-signal aux_sum_in0, aux_sum_in1 : signed (sample_size-1 downto 0);
+signal windows : STD_LOGIC := '0';
+signal first_cycle : STD_LOGIC := '1';
+signal aux_Sample_Out_ready : STD_LOGIC := '0';
 
 begin
 
@@ -64,6 +63,7 @@ begin
 process(clk, reset)
 begin
 if (reset = '1') then
+    first_cycle <= '1';
     x0 <= (others=>'0');
     x1 <= (others=>'0');
     x2 <= (others=>'0');
@@ -71,18 +71,22 @@ if (reset = '1') then
     x4 <= (others=>'0');
 elsif (clk'event and clk='1') then
     if (Sample_In_enable='1') then
+        first_cycle <= '0';
         windows <= '1';
         x0 <= next_x0;
         x1 <= next_x1;
         x2 <= next_x2;
         x3 <= next_x3;
         x4 <= next_x4;
-    elsif (state = "101") then
+    end if;
+    
+    if (state = "101") then
         aux_Sample_Out_ready <= '1';
         windows <= '0';
     else
         aux_Sample_Out_ready <= '0';
     end if;
+    
 end if;
 end process;
 
@@ -92,7 +96,11 @@ if (reset = '1') then
     R1 <= (others => '0');
     R2 <= (others => '0');
     R3 <= (others => '0');
+    
+    state <= (others => '0');
+    
 elsif (clk'event and clk='1' and windows='1') then
+        
     state <= next_state;
     
     R1 <= next_R1;
@@ -119,40 +127,69 @@ end if;
 end process;
 
 -- lógica de cambio de estado
-next_x4 <= x3;
-next_x3 <= x2;
-next_x2 <= x1;
-next_x1 <= x0;
-next_x0 <= Sample_In;
-
-process(R1,R2,R3)
+process(Sample_In)
 begin
-next_state <= state + 1;
-next_R3 <= mul_out (7 + sample_size - 1  downto sample_size-1);
+    if (first_cycle='1') then
+        next_x4 <= x4;
+        next_x3 <= x3;
+        next_x2 <= x2;
+        next_x1 <= x1;
+        next_x0 <= x0;
+    else
+        next_x4 <= x3;
+        next_x3 <= x2;
+        next_x2 <= x1;
+        next_x1 <= x0;
+        next_x0 <= Sample_In;
+    end if;
+end process;
 
-case(state) is
-    when "000" =>
-        next_R1 <= R1;
-        next_R2 <= sum_out;
-    when ("001" or "101") =>
-        next_R1 <= sum_out;
-        next_R2 <= sum_out;       
-    when "010" =>
-        next_R1 <= R1;   
-        next_R2 <= R3;
-    when "011" =>
-        next_R1 <= sum_out;
-    when "100" =>
-        next_R2 <= sum_out;
-    when others =>
-        next_R1 <= (others=>'0');
-        next_R2 <= (others=>'0');  
-end case;
+process(reset,state,windows,state,R1,R2,R3)
+begin
+if (reset = '1') then
+    next_state <= (others=>'0');
+    next_R1 <= (others=>'0');
+    next_R2 <= (others=>'0');
+    next_R3 <= (others=>'0');
+elsif (windows = '1') then
+
+    next_state <= state + 1;
+
+    next_R3 <= mul_out (7 + sample_size - 1  downto sample_size-1);
+
+    case(state) is
+        when "000" =>
+            next_R1 <= R1;
+            next_R2 <= sum_out;
+            if (first_cycle='1') then
+                next_R2 <= (others=>'0');
+                next_R3 <= (others=>'0');
+            end if;
+        when "001" =>
+            next_R1 <= R3;
+            next_R2 <= sum_out;     
+        when "010" =>
+            next_R1 <= R1;   
+            next_R2 <= R3;
+        when "011" =>
+            next_R1 <= R3;
+            next_R2 <= sum_out;
+        when "100" =>
+            next_R2 <= sum_out;
+        when "101" =>
+            next_R1 <= R3;
+            next_R2 <= sum_out;
+            next_state <= (others => '0');
+        when others =>
+            next_R1 <= (others=>'0');
+            next_R2 <= (others=>'0');  
+    end case;
+end if;
 end process;
 
 -- lógica de salida
-Sample_out <= R2;
-Sample_Out_ready <=aux_Sample_Out_ready;
+Sample_Out <= R2;
+Sample_Out_ready <= aux_Sample_Out_ready;
 
 with state select mul_in0 <=
 	C2 when "000",
