@@ -45,17 +45,19 @@ end fir_controlador;
 
 architecture Behavioral of fir_controlador is
 
-signal state, next_state : unsigned (2 downto 0) := (others=>'0');
+signal state: unsigned (2 downto 0):= (others=>'0') ;
+signal next_state : unsigned (2 downto 0);
 signal R1, R2, R3 : signed (sample_size-1 downto 0) := (others => '0');
-signal next_R1, next_R2, next_R3 : signed (sample_size-1 downto 0) := (others => '0');
+signal next_R1, next_R2, next_R3 : signed (sample_size-1 downto 0);
 
 signal c0, c1, c2, c3, c4 : signed (sample_size-1 downto 0) := (others=>'0');
 signal x0, x1, x2, x3, x4 : signed (sample_size-1 downto 0) := (others=>'0');
-signal next_x0, next_x1, next_x2, next_x3, next_x4 : signed (sample_size-1 downto 0) := (others=>'0');
+signal next_x0, next_x1, next_x2, next_x3, next_x4 : signed (sample_size-1 downto 0);
 
 signal windows : STD_LOGIC := '0';
 signal first_cycle : STD_LOGIC := '1';
 signal aux_Sample_Out_ready : STD_LOGIC := '0';
+signal aux_Sample_Out :  signed (sample_size-1 downto 0) := (others =>'0');
 
 begin
 
@@ -82,6 +84,7 @@ elsif (clk'event and clk='1') then
     
     if (state = "101") then
         aux_Sample_Out_ready <= '1';
+        aux_Sample_Out <= R2;
         windows <= '0';
     else
         aux_Sample_Out_ready <= '0';
@@ -127,15 +130,16 @@ end if;
 end process;
 
 -- lógica de cambio de estado
-process(Sample_In)
+process(Sample_In_enable)
 begin
-    if (first_cycle='1') then
-        next_x4 <= x4;
-        next_x3 <= x3;
-        next_x2 <= x2;
-        next_x1 <= x1;
-        next_x0 <= x0;
-    else
+    if (Sample_In_enable='1') then
+--    if (first_cycle='1') then
+--        next_x4 <= x4;
+--        next_x3 <= x3;
+--        next_x2 <= x2;
+--        next_x1 <= x1;
+--        next_x0 <= x0;
+--    else
         next_x4 <= x3;
         next_x3 <= x2;
         next_x2 <= x1;
@@ -144,7 +148,7 @@ begin
     end if;
 end process;
 
-process(reset,state,windows,state,R1,R2,R3)
+process(reset,state,windows,state,R1,R2,R3,sum_out,mul_out)
 begin
 if (reset = '1') then
     next_state <= (others=>'0');
@@ -161,10 +165,10 @@ elsif (windows = '1') then
         when "000" =>
             next_R1 <= R1;
             next_R2 <= sum_out;
-            if (first_cycle='1') then
-                next_R2 <= (others=>'0');
-                next_R3 <= (others=>'0');
-            end if;
+--            if (first_cycle='1') then
+--                next_R2 <= (others=>'0');
+--                next_R3 <= (others=>'0');
+--            end if;
         when "001" =>
             next_R1 <= R3;
             next_R2 <= sum_out;     
@@ -188,7 +192,7 @@ end if;
 end process;
 
 -- lógica de salida
-Sample_Out <= R2;
+Sample_Out <= aux_Sample_Out;
 Sample_Out_ready <= aux_Sample_Out_ready;
 
 with state select mul_in0 <=

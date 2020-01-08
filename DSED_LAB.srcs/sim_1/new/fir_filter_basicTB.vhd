@@ -41,10 +41,10 @@ architecture Behavioral of fir_filter_basicTB is
 constant clk_period : time := 83 ns;
 
        signal clk :  STD_LOGIC;
-       signal Reset :  STD_LOGIC;
+       signal Reset :  STD_LOGIC :='0';
        signal Sample_In :  signed (sample_size-1 downto 0);
        signal Sample_In_enable :  STD_LOGIC;
-       signal filter_select:  STD_LOGIC; --0 lowpass, 1 highpass
+       signal filter_select:  STD_LOGIC :='0'; --0 lowpass, 1 highpass
        signal Sample_Out :  signed (sample_size-1 downto 0);
        signal Sample_Out_ready :  STD_LOGIC;
 
@@ -87,7 +87,7 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
-Sample_In <= "01000000" after 83ns;
+Sample_In <= "01111111" after 83ns;
 Sample_In_enable <= '1' after 83ns, '0' after 83*2ns;
 
 end Behavioral;
