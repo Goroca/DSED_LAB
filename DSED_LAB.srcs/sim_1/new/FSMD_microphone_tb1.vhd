@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use work.package_dsed.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -42,7 +43,7 @@ Port ( clk_12megas : in STD_LOGIC;
 reset : in STD_LOGIC;
 enable_4_cycles : in STD_LOGIC;
 micro_data : in STD_LOGIC;
-sample_out : out STD_LOGIC_VECTOR (8-1 downto 0);
+sample_out : out STD_LOGIC_VECTOR (sample_size-1 downto 0);
 sample_out_ready : out STD_LOGIC);
 end component;
 
@@ -50,7 +51,7 @@ signal clk_12megas : STD_LOGIC := '0';
 signal reset : STD_LOGIC := '0';
 signal enable_4_cycles : STD_LOGIC := '0';
 signal micro_data : STD_LOGIC := '0';
-signal sample_out : STD_LOGIC_VECTOR (8-1 downto 0) := "00000000";
+signal sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0) := "00000000";
 signal sample_out_ready : STD_LOGIC := '0';
 
 -- CLK period definition
