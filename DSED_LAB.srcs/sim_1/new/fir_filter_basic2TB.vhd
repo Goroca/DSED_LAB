@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 08.01.2020 16:46:28
+-- Create Date: 08.01.2020 19:41:05
 -- Design Name: 
--- Module Name: fir_filter_basicTB - Behavioral
+-- Module Name: fir_filter_basic2TB - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -21,29 +21,29 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
 use work.package_dsed.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
+
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity fir_filter_basicTB is
+entity fir_filter_basic2TB is
 --  Port ( );
-end fir_filter_basicTB;
+end fir_filter_basic2TB;
 
-architecture Behavioral of fir_filter_basicTB is
+architecture Behavioral of fir_filter_basic2TB is
 constant clk_period : time := 83 ns;
 
        signal clk :  STD_LOGIC;
        signal Reset :  STD_LOGIC :='0';
-       signal Sample_In :  signed (sample_size-1 downto 0);
-       signal Sample_In_enable :  STD_LOGIC;
+       signal Sample_In :  signed (sample_size-1 downto 0) := (others=>'0');
+       signal Sample_In_enable :  STD_LOGIC:= '0';
        signal filter_select:  STD_LOGIC :='0'; --0 lowpass, 1 highpass
        signal Sample_Out :  signed (sample_size-1 downto 0);
        signal Sample_Out_ready :  STD_LOGIC;
@@ -87,7 +87,63 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
-Sample_In <= "11111111" after 83ns;
-Sample_In_enable <= '1' after 83ns, '0' after 83*2ns;
+process
+begin
+wait for 83ns;
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+
+Sample_In <= "01000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In <= "00010000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*6ns;
+
+
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+
+
+wait for 2000ns;
+end process;
 
 end Behavioral;
