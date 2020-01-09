@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 
 
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -148,10 +149,10 @@ begin
     end if;
 end process;
 
-process(reset,state,windows,state,R1,R2,R3,sum_out,mul_out)
+process(reset,state,windows,R1,R2,R3,sum_out,mul_out)
 begin
 if (reset = '1') then
-    next_state <= (others=>'0');
+    --next_state <= (others=>'0');
     next_R1 <= (others=>'0');
     next_R2 <= (others=>'0');
     next_R3 <= (others=>'0');

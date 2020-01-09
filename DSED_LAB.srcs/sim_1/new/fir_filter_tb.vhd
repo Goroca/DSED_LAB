@@ -35,7 +35,7 @@ architecture Behavioral of fir_filter_tb is
 signal clk : std_logic := '0';
 
 -- Declaration of the reading signal
-signal Sample_In : signed (sample_size-1 downto 0);
+signal Sample_In : signed (sample_size-1 downto 0) := (others=>'0');
 
 -- Declaration of the writing signal
 signal Sample_Out : signed (sample_size-1 downto 0);
@@ -43,11 +43,11 @@ signal int_Sample_Out : integer;
 
 signal Reset : std_logic := '0';
 signal filter_select : std_logic := '0';
-signal Sample_In_enable : std_logic := '1';
+signal Sample_In_enable : std_logic := '0';
 signal Sample_Out_ready : std_logic;
 
 -- Clk period definition
-constant clk_period : time := 83 ns;
+constant CLK_PERIOD : time := 83 ns;
 
 component fir_filter
     Port ( 
@@ -66,6 +66,22 @@ begin
 -- Clock statement
 clk <= not clk after clk_period/2;
 
+--clk_process: process
+--begin
+--    clk <= '0';
+--    wait for CLK_PERIOD/2;
+--    clk <= '1';
+--    wait for CLK_PERIOD/2;
+--end process;
+
+--reset_process: process
+--begin
+--    Reset <= '1';
+--    wait for 50 ns;
+--    Reset <= '0';
+--    wait;
+--end process;
+
 UUT: fir_filter
     port map (
         clk => clk,
@@ -77,14 +93,6 @@ UUT: fir_filter
         Sample_Out_ready => Sample_Out_ready
     );
 
---reset_process: process
---begin
---    Reset <= '1';
---    wait for 50 ns;
---    Reset <= '0';
---    wait;
---end process;
-
 read_process: process(clk)
     file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
     variable in_line : line;
@@ -95,10 +103,13 @@ begin
         if not endfile(in_file) then
             ReadLine(in_file, in_line);
             Read(in_line, in_int, in_read_ok);
-            Sample_In <= to_signed(in_int, 8); -- 8 = the word width
+            Sample_In <= to_signed(in_int, sample_size); -- sample_size = the word width
+            Sample_In_enable <= '1';
         else
             assert false report "Simulation finished" severity failure;
         end if;
+    else
+        Sample_In_enable <= '0';
     end if;
 end process;
 
