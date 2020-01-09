@@ -103,7 +103,7 @@ if (reset = '1') then
     
     state <= (others => '0');
     
-elsif (clk'event and clk='1' and windows='1') then
+elsif (clk'event and clk=SAMPLE_CLK_EDGE and windows='1') then
         
     state <= next_state;
     

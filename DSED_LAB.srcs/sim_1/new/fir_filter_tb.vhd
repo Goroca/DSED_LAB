@@ -46,6 +46,8 @@ signal filter_select : std_logic := '0';
 signal Sample_In_enable : std_logic := '0';
 signal Sample_Out_ready : std_logic;
 
+signal start : std_logic :='1';
+
 -- Clk period definition
 constant CLK_PERIOD : time := 83 ns;
 
@@ -63,16 +65,13 @@ end component;
 
 begin
 
--- Clock statement
-clk <= not clk after clk_period/2;
-
---clk_process: process
---begin
---    clk <= '0';
---    wait for CLK_PERIOD/2;
---    clk <= '1';
---    wait for CLK_PERIOD/2;
---end process;
+clk_process: process
+begin
+    clk <= '0';
+    wait for CLK_PERIOD/2;
+    clk <= '1';
+    wait for CLK_PERIOD/2;
+end process;
 
 --reset_process: process
 --begin
@@ -94,31 +93,41 @@ UUT: fir_filter
     );
 
 read_process: process(clk)
-    file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
+    --file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
+    file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
+
     variable in_line : line;
     variable in_int : integer;
     variable in_read_ok : boolean;
 begin
-    if (clk'event and clk='1') then
-        if not endfile(in_file) then
+    if (clk'event and clk=SAMPLE_CLK_EDGE) then
+        if (not endfile(in_file) )then
+            if(Sample_Out_ready='1' or start ='1') then
+            start<='0';
             ReadLine(in_file, in_line);
             Read(in_line, in_int, in_read_ok);
             Sample_In <= to_signed(in_int, sample_size); -- sample_size = the word width
             Sample_In_enable <= '1';
+            
+            else
+                Sample_In_enable<='0';
+            end if;
         else
             assert false report "Simulation finished" severity failure;
         end if;
+        
+        
     else
-        Sample_In_enable <= '0';
     end if;
 end process;
+
 
 write_process: process(clk, Sample_Out)
     file out_file : text open write_mode is "sample_out.dat";
     variable out_line : line;
 begin
     int_Sample_Out <= to_integer(Sample_Out);
-    if (clk'event and clk='0') then   
+    if (clk'event and clk=SAMPLE_CLK_EDGE) then   
         Write(out_line, int_Sample_Out);
         WriteLine(out_file, out_line);
     end if;
