@@ -46,7 +46,9 @@ signal filter_select : std_logic := '0';
 signal Sample_In_enable : std_logic := '0';
 signal Sample_Out_ready : std_logic;
 
-signal start : std_logic :='1';
+signal start : std_logic := '1';
+signal end_file : std_logic := '0';
+signal end_count : unsigned(2 downto 0) := "000";
 
 -- Clk period definition
 constant CLK_PERIOD : time := 83 ns;
@@ -93,8 +95,8 @@ UUT: fir_filter
     );
 
 read_process: process(clk)
-    --file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
-    file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
+    file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
+    --file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
 
     variable in_line : line;
     variable in_int : integer;
@@ -102,7 +104,7 @@ read_process: process(clk)
 begin
     if (clk'event and clk=SAMPLE_CLK_EDGE) then
         if (not endfile(in_file) )then
-            if(Sample_Out_ready='1' or start ='1') then
+            if(Sample_Out_ready='1'  or start ='1') then
             start<='0';
             ReadLine(in_file, in_line);
             Read(in_line, in_int, in_read_ok);
@@ -113,12 +115,19 @@ begin
                 Sample_In_enable<='0';
             end if;
         else
-            assert false report "Simulation finished" severity failure;
+            end_file <= '1';
         end if;
-        
-        
-    else
     end if;
+end process;
+
+end_process: process(clk, end_file)
+begin
+    if (clk'event and clk='1') then
+        if (end_file = '1') then
+            end_count <= end_count + 1;
+        end if;
+    end if;
+    
 end process;
 
 
@@ -127,9 +136,14 @@ write_process: process(clk, Sample_Out)
     variable out_line : line;
 begin
     int_Sample_Out <= to_integer(Sample_Out);
-    if (clk'event and clk=SAMPLE_CLK_EDGE) then   
-        Write(out_line, int_Sample_Out);
-        WriteLine(out_file, out_line);
+    if (clk'event and clk=SAMPLE_CLK_EDGE) then
+        if (Sample_Out_Ready = '1') then   
+            Write(out_line, int_Sample_Out);
+            WriteLine(out_file, out_line);
+            if (end_count = "110") then             -- La simulación termina cuando se ha procesado la última muestra (5 ciclos después de su lectura en sample_in.dat)
+                assert false report "Simulation finished" severity failure;
+            end if;
+        end if;
     end if;
 end process;    
 
