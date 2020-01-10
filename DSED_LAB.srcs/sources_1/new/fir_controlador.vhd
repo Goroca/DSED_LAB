@@ -56,7 +56,6 @@ signal x0, x1, x2, x3, x4 : signed (sample_size-1 downto 0) := (others=>'0');
 signal next_x0, next_x1, next_x2, next_x3, next_x4 : signed (sample_size-1 downto 0);
 
 signal windows : STD_LOGIC := '0';
-signal first_cycle : STD_LOGIC := '1';
 signal aux_Sample_Out_ready : STD_LOGIC := '0';
 signal aux_Sample_Out :  signed (sample_size-1 downto 0) := (others =>'0');
 
@@ -66,7 +65,6 @@ begin
 process(clk, reset)
 begin
 if (reset = '1') then
-    first_cycle <= '1';
     x0 <= (others=>'0');
     x1 <= (others=>'0');
     x2 <= (others=>'0');
@@ -74,7 +72,6 @@ if (reset = '1') then
     x4 <= (others=>'0');
 elsif (clk'event and clk='1') then
     if (Sample_In_enable='1') then
-        first_cycle <= '0';
         windows <= '1';
         x0 <= next_x0;
         x1 <= next_x1;
@@ -134,13 +131,6 @@ end process;
 process(Sample_In_enable)
 begin
     if (Sample_In_enable='1') then
---    if (first_cycle='1') then
---        next_x4 <= x4;
---        next_x3 <= x3;
---        next_x2 <= x2;
---        next_x1 <= x1;
---        next_x0 <= x0;
---    else
         next_x4 <= x3;
         next_x3 <= x2;
         next_x2 <= x1;
@@ -149,14 +139,9 @@ begin
     end if;
 end process;
 
-process(reset,state,windows,R1,R2,R3,sum_out,mul_out)
+process(state,windows,R1,R2,R3,sum_out,mul_out)
 begin
-if (reset = '1') then
-    --next_state <= (others=>'0');
-    next_R1 <= (others=>'0');
-    next_R2 <= (others=>'0');
-    next_R3 <= (others=>'0');
-elsif (windows = '1') then
+if (windows = '1') then
 
     next_state <= state + 1;
 
@@ -166,10 +151,7 @@ elsif (windows = '1') then
         when "000" =>
             next_R1 <= R1;
             next_R2 <= sum_out;
---            if (first_cycle='1') then
---                next_R2 <= (others=>'0');
---                next_R3 <= (others=>'0');
---            end if;
+
         when "001" =>
             next_R1 <= R3;
             next_R2 <= sum_out;     
