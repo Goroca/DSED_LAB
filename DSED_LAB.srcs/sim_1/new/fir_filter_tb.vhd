@@ -96,8 +96,8 @@ UUT: fil_filter_2
     );
 
 read_process: process(clk)
-    --file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
-    file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
+    file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
+    --file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
 
     variable in_line : line;
     variable in_int : integer;
