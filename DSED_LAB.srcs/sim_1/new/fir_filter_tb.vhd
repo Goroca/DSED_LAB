@@ -52,8 +52,8 @@ signal end_count : unsigned(2 downto 0) := "000";
 
 -- Clk period definition
 constant CLK_PERIOD : time := 83 ns;
-  component fil_filter_2
---component fir_filter
+
+ component fir_filter
     Port ( 
        clk : in STD_LOGIC;
        Reset : in STD_LOGIC;
@@ -75,16 +75,9 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
---reset_process: process
---begin
---    Reset <= '1';
---    wait for 50 ns;
---    Reset <= '0';
---    wait;
---end process;
 
-UUT: fil_filter_2
---UUT: fir_filter
+
+UUT: fir_filter
     port map (
         clk => clk,
         Reset => Reset,

@@ -51,7 +51,9 @@ pause
 %return
 
 % Comparación de los datos con preción real de los filtrados con la placa.
-vhdlout=load('C:\Users\usuario\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
+%vhdlout=load('C:\Users\usuario\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
+vhdlout=load('C:\Users\Carlos\Vivado-WorkSpace\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
+
 sound(vhdlout)
 
 data_filt=data_pb;
