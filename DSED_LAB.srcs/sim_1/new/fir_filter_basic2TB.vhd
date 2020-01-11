@@ -143,7 +143,7 @@ wait for 83ns;
 Sample_In_enable <= '0';
 
 
-wait for 2000ns;
+wait for 20000ns;
 end process;
 
 end Behavioral;

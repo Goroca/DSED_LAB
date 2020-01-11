@@ -42,8 +42,8 @@ constant clk_period : time := 83 ns;
 
        signal clk :  STD_LOGIC;
        signal Reset :  STD_LOGIC :='0';
-       signal Sample_In :  signed (sample_size-1 downto 0);
-       signal Sample_In_enable :  STD_LOGIC;
+       signal Sample_In :  signed (sample_size-1 downto 0):=(others=>'0');
+       signal Sample_In_enable :  STD_LOGIC:='0';
        signal filter_select:  STD_LOGIC :='0'; --0 lowpass, 1 highpass
        signal Sample_Out :  signed (sample_size-1 downto 0);
        signal Sample_Out_ready :  STD_LOGIC;

@@ -52,8 +52,8 @@ signal end_count : unsigned(2 downto 0) := "000";
 
 -- Clk period definition
 constant CLK_PERIOD : time := 83 ns;
-
-component fir_filter
+  component fil_filter_2
+--component fir_filter
     Port ( 
        clk : in STD_LOGIC;
        Reset : in STD_LOGIC;
@@ -83,7 +83,8 @@ end process;
 --    wait;
 --end process;
 
-UUT: fir_filter
+UUT: fil_filter_2
+--UUT: fir_filter
     port map (
         clk => clk,
         Reset => Reset,
@@ -95,8 +96,8 @@ UUT: fir_filter
     );
 
 read_process: process(clk)
-    file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
-    --file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
+    --file in_file : text open read_mode is "C:\Users\usuario\DSED_LAB\sample_in.dat";
+    file in_file : text open read_mode is "C:\Users\Carlos\Vivado-Workspace\DSED_LAB\sample_in.dat";
 
     variable in_line : line;
     variable in_int : integer;
