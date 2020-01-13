@@ -58,6 +58,7 @@ signal last_aux_Sample_Out :  signed (sample_size-1 downto 0) := (others =>'0');
 signal        sum_in0,sum_in1,sum_out :  signed (((sample_size-1)*2-1) downto 0);
 signal        mul_in0,mul_in1,mul_out :  signed (((sample_size-1)*2-1) downto 0);
 
+signal aux_mul_in0, aux_mul_in1 : signed (((sample_size-1)*2-1) downto 0);
 
 begin
 
@@ -114,7 +115,9 @@ next_x1 <= x0;
 next_x0 <= Sample_In;   
 
 sum_out <= sum_in0 + sum_in1;
-mul_out <= to_signed ( to_integer(mul_in0) * to_integer(mul_in1) , mul_out'length);
+
+
+mul_out <= mul_in0*mul_in1;
 
 
 with state select mul_in0 <=
