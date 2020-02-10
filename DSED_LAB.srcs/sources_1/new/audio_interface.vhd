@@ -29,14 +29,16 @@ entity audio_interface is
            reset : in STD_LOGIC;
            --Recording ports
            --To/From the controller
-           record_enable: in STD_LOGIC;
+           record_enable: in STD_LOGIC;         
            sample_out: out STD_LOGIC_VECTOR (sample_size-1 downto 0);
            sample_out_ready: out STD_LOGIC;
+           
            --To/From the microphone
            micro_clk : out STD_LOGIC;
            micro_data : in STD_LOGIC;
            micro_LR : out STD_LOGIC := '0';
            --Playing ports
+   
            --To/From the controller
            play_enable: in STD_LOGIC;
            sample_in: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
@@ -48,6 +50,7 @@ end audio_interface;
 
 architecture Behavioral of audio_interface is
 
+    
 component en_4_cycles
     Port ( clk_12megas : in STD_LOGIC;
            reset : in STD_LOGIC;
@@ -77,9 +80,17 @@ end component;
 -- señales auxiliares
 signal aux_en_2_ciclos, aux_en_4_ciclos : STD_LOGIC;
 
+
+--record
+signal aux_sample_out:  STD_LOGIC_VECTOR (sample_size-1 downto 0);
+signal aux_sample_out_ready:  STD_LOGIC;
+
+--play
+signal aux_sample_request : STD_LOGIC;
+signal aux_sample_in : std_logic_vector(sample_size-1 downto 0);
+
 begin
-
-
+  
 -- Unities declaration
 enable: en_4_cycles
     port map(
@@ -95,18 +106,57 @@ microphone: FSMD_microphone
         reset => reset,
         enable_4_cycles => aux_en_4_ciclos,
         micro_data => micro_data,
-        sample_out => sample_out, 
-        sample_out_ready => sample_out_ready);
-
+        sample_out => aux_sample_out, 
+        sample_out_ready => aux_sample_out_ready);
 
 audio: pwm
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
         en_2_cycles => aux_en_2_ciclos,
-        sample_in => sample_in, 
-        sample_request => sample_request,
+        sample_in => aux_sample_in, 
+        sample_request => aux_sample_request,
         pwm_pulse => jack_pwm);
-            
+        
+        
+process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request)
+begin
+if (play_enable='0' and record_enable ='0') then --Reproduce directo
+
+sample_out <= (others => '0');
+sample_out_ready <= '0';
+
+aux_sample_in <= aux_sample_out;
+sample_request <= '0';
+
+elsif (play_enable='0' and record_enable ='1') then --Reproduce directo y graba
+
+sample_out_ready <= aux_sample_out_ready;
+sample_out <= aux_sample_out;
+
+aux_sample_in <= aux_sample_out;
+sample_request <= '0';
+
+elsif (play_enable='1' and record_enable ='0') then -- Reproduce grabado
+
+sample_out <= (others => '0');
+sample_out_ready <= '0';
+
+aux_sample_in <= sample_in;
+sample_request <= aux_sample_request;
+
+else                                                 -- Reproduce grabado y graba
+
+sample_out_ready <= aux_sample_out_ready;
+sample_out <= aux_sample_out;
+
+aux_sample_in <= sample_in;
+sample_request <= aux_sample_request;
+
+end if;
+
+end process;
+
+
 end Behavioral;
 

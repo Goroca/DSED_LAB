@@ -80,7 +80,7 @@ begin
     Sample_Out => Sample_Out
  );
 
-crt: control 
+ctr: control 
 Port Map( 
        clk => clk,
        Reset => Reset,

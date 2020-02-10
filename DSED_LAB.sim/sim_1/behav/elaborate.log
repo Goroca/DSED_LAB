@@ -1,6 +1,6 @@
 Vivado Simulator 2017.2
 Copyright 1986-1999, 2001-2016 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2017.2/bin/unwrapped/win64.o/xelab.exe -wto a9b082810ecd4554a74c2f800bd0f577 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot audio_interface_tb_behav xil_defaultlib.audio_interface_tb -log elaborate.log 
+Running: C:/Xilinx/Vivado/2017.2/bin/unwrapped/win64.o/xelab.exe -wto a9b082810ecd4554a74c2f800bd0f577 --debug typical --relax --mt 2 -L xil_defaultlib -L secureip -L xpm --snapshot dsed_audio_behav xil_defaultlib.dsed_audio -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
@@ -12,9 +12,20 @@ Compiling package std.textio
 Compiling package ieee.std_logic_1164
 Compiling package xil_defaultlib.package_dsed
 Compiling package ieee.numeric_std
+Compiling package unisim.vcomponents
+Compiling package ieee.std_logic_arith
+Compiling package ieee.std_logic_signed
+Compiling package ieee.vital_timing
+Compiling package ieee.vital_primitives
+Compiling package unisim.vpkg
+Compiling architecture bufg_v of entity unisim.BUFG [bufg_default]
+Compiling architecture ibuf_v of entity unisim.IBUF [\IBUF(1,9,1,1,1,4,1,7)\]
+Compiling architecture mmcme2_adv_v of entity unisim.MMCME2_ADV [\MMCME2_ADV(clkfbout_mult_f=49.8...]
+Compiling architecture structure of entity xil_defaultlib.clk_12MHz_clk_12MHz_clk_wiz [clk_12mhz_clk_12mhz_clk_wiz_defa...]
+Compiling architecture structure of entity xil_defaultlib.clk_12MHz [clk_12mhz_default]
 Compiling architecture behavioral of entity xil_defaultlib.en_4_cycles [en_4_cycles_default]
 Compiling architecture behavioral of entity xil_defaultlib.FSMD_microphone [fsmd_microphone_default]
 Compiling architecture behavioral of entity xil_defaultlib.pwm [pwm_default]
 Compiling architecture behavioral of entity xil_defaultlib.audio_interface [audio_interface_default]
-Compiling architecture behavioral of entity xil_defaultlib.audio_interface_tb
-Built simulation snapshot audio_interface_tb_behav
+Compiling architecture behavioral of entity xil_defaultlib.dsed_audio
+Built simulation snapshot dsed_audio_behav
