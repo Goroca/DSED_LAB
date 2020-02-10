@@ -124,7 +124,7 @@ audio: audio_interface
            sample_out => open,--: out STD_LOGIC_VECTOR (sample_size-1 downto 0);
            sample_out_ready => open,--: out STD_LOGIC;
            --To/From the microphone
-           micro_clk => open, --: out STD_LOGIC;
+           micro_clk => micro_clk, --: out STD_LOGIC;
            micro_data => micro_data,--: in STD_LOGIC;
            micro_LR => micro_LR,--: out STD_LOGIC;
            --Playing ports
