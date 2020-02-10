@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 26.12.2019 21:34:29
+-- Create Date: 10.02.2020 22:12:29
 -- Design Name: 
--- Module Name: controlador_tb - Behavioral
+-- Module Name: TB_FULL_SYSTEM - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,22 +31,31 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity controlador_tb is
+entity TB_FULL_SYSTEM is
 --  Port ( );
-end controlador_tb;
+end TB_FULL_SYSTEM;
 
-architecture Behavioral of controlador_tb is
+architecture Behavioral of TB_FULL_SYSTEM is
 
-component controlador
-    Port ( clk_100Mhz : in std_logic;
-           reset: in std_logic;
-           --To/From the microphone
-           micro_clk : out STD_LOGIC;
-           micro_data : in STD_LOGIC;
-           micro_LR : out STD_LOGIC;
-           --To/From the mini-jack
-           jack_sd : out STD_LOGIC;
-           jack_pwm : out STD_LOGIC);
+component dsed_audio 
+Port (
+clk_100Mhz : in std_logic;
+reset: in std_logic;
+--Control ports
+BTNL: in STD_LOGIC;
+BTNC: in STD_LOGIC;
+BTNR: in STD_LOGIC;
+
+SW0: in STD_LOGIC;
+SW1: in STD_LOGIC;
+--To/From the microphone
+micro_clk : out STD_LOGIC;
+micro_data : in STD_LOGIC;
+micro_LR : out STD_LOGIC;
+--To/From the mini-jack
+jack_sd : out STD_LOGIC;
+jack_pwm : out STD_LOGIC
+);
 end component;
 
 -- input signals declaration
@@ -54,8 +63,8 @@ signal clk_100Mhz, reset : std_logic := '0';
 signal micro_data : std_logic := '0';
 
 -- output signals declaration
-signal micro_clk, micro_LR : std_logic := '0';
-signal jack_sd, jack_pwm : std_logic := '0';
+signal micro_clk, micro_LR : std_logic;
+signal jack_sd, jack_pwm : std_logic;
 
 -- CLK period definition
 constant CLK_PERIOD : time := 10 ns;
@@ -63,15 +72,25 @@ constant CLK_PERIOD : time := 10 ns;
 begin
 
 -- UUT declaration
-UUT: controlador
-    port map (
-        clk_100Mhz => clk_100Mhz,
-        reset => reset,
-        micro_clk => micro_clk,
-        micro_data => micro_data,
-        micro_LR => micro_LR,
-        jack_sd => jack_sd,
-        jack_pwm => jack_pwm);
+SYSTEM: dsed_audio 
+Port Map(
+clk_100Mhz => clk_100Mhz, --: in std_logic;
+reset => reset, --: in std_logic;
+--Control ports
+BTNL => '0',--: in STD_LOGIC;
+BTNC => '0',--: in STD_LOGIC;
+BTNR => '0',--: in STD_LOGIC;
+
+SW0 =>'0',--: in STD_LOGIC;
+SW1 =>'0',--: in STD_LOGIC;
+--To/From the microphone
+micro_clk => micro_clk,--: out STD_LOGIC;
+micro_data => micro_data,--: in STD_LOGIC;
+micro_LR => micro_LR,--: out STD_LOGIC;
+--To/From the mini-jack
+jack_sd => jack_sd,--: out STD_LOGIC;
+jack_pwm => jack_pwm--: out STD_LOGIC
+);
         
 clk_process: process
 begin
@@ -90,5 +109,6 @@ begin
     micro_data <= '1';
     wait;
 end process;
+
 
 end Behavioral;
