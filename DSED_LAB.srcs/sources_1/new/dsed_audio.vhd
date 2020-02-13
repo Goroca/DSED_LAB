@@ -108,6 +108,8 @@ component fir_filter
 );
 end component;
 
+
+  
 begin
 CLK: clk_12MHz
     port map(
@@ -137,4 +139,24 @@ audio: audio_interface
            jack_pwm => jack_pwm --: out STD_LOGIC
            );
 
+FILTER: fir_filter 
+    Port Map( 
+   clk                =>  clk_system,--: in STD_LOGIC;
+   Reset              =>  reset,--: in STD_LOGIC;
+   Sample_In          =>  (others=>'0'),--: in signed (sample_size-1 downto 0);
+   Sample_In_enable   =>  '0',--: in STD_LOGIC;
+   filter_select      =>  '0',--: in STD_LOGIC; --0 lowpass, 1 highpass
+   Sample_Out         =>  open,--: out signed (sample_size-1 downto 0);
+   Sample_Out_ready   =>  open--: out STD_LOGIC
+);
+
+MEMORY:  blk_mem_gen_0
+  PORT Map(
+    clka   => clk_system,    --: IN STD_LOGIC;
+    ena    => reset,     --: IN STD_LOGIC;
+    wea    => "0",     --: IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    addra  => (others=>'0'),     --: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+    dina   => (others=>'0'),     --: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    douta  => open     --: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+  );
 end Behavioral;
