@@ -121,40 +121,22 @@ audio: pwm
         
 process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request)
 begin
-if (play_enable='0' and record_enable ='0') then --Reproduce directo
+  if (record_enable ='0') then
+    sample_out <= (others => '0');
+    sample_out_ready <= '0'; 
+  else
+    sample_out_ready <= aux_sample_out_ready;
+    sample_out <= aux_sample_out;   
+  end if;
 
-sample_out <= (others => '0');
-sample_out_ready <= '0';
-
-aux_sample_in <= aux_sample_out;
-sample_request <= '0';
-
-elsif (play_enable='0' and record_enable ='1') then --Reproduce directo y graba
-
-sample_out_ready <= aux_sample_out_ready;
-sample_out <= aux_sample_out;
-
-aux_sample_in <= aux_sample_out;
-sample_request <= '0';
-
-elsif (play_enable='1' and record_enable ='0') then -- Reproduce grabado
-
-sample_out <= (others => '0');
-sample_out_ready <= '0';
-
-aux_sample_in <= sample_in;
-sample_request <= aux_sample_request;
-
-else                                                 -- Reproduce grabado y graba
-
-sample_out_ready <= aux_sample_out_ready;
-sample_out <= aux_sample_out;
-
-aux_sample_in <= sample_in;
-sample_request <= aux_sample_request;
-
-end if;
-
+  if(play_enable='0') then
+    aux_sample_in <= aux_sample_out;
+    sample_request <= '0';     
+  else
+    aux_sample_in <= sample_in;
+    sample_request <= aux_sample_request;      
+  end if;
+  
 end process;
 
 

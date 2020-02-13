@@ -111,6 +111,7 @@ end component;
 
   
 begin
+
 CLK: clk_12MHz
     port map(
         clk_in1 => clk_100Mhz,
@@ -159,4 +160,8 @@ MEMORY:  blk_mem_gen_0
     dina   => (others=>'0'),     --: IN STD_LOGIC_VECTOR(7 DOWNTO 0);
     douta  => open     --: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
   );
-end Behavioral;
+  
+  
+ micro_LR<= SAMPLE_CLK_EDGE;
+ 
+ end Behavioral;
