@@ -121,6 +121,7 @@ audio: pwm
         
 process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request)
 begin
+
   if (record_enable ='0') then
     sample_out <= (others => '0');
     sample_out_ready <= '0'; 
@@ -130,7 +131,7 @@ begin
   end if;
 
   if(play_enable='0') then
-    aux_sample_in <= aux_sample_out;
+    aux_sample_in <= aux_sample_out; --Para desabilitar poner: (others=>'0')
     sample_request <= '0';     
   else
     aux_sample_in <= sample_in;
@@ -141,5 +142,3 @@ end process;
 
 
 end Behavioral;
-
-

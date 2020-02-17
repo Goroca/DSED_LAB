@@ -110,7 +110,8 @@ wait for 83ns;
 Sample_In_enable <= '0';
 wait for 83*7ns;
 
-Sample_In <= "00010000";
+--Sample_In <= "00010000";
+Sample_In <= "00000000";
 Sample_In_enable <= '1';
 wait for 83ns;
 Sample_In_enable <= '0';

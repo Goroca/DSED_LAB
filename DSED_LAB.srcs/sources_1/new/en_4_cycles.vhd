@@ -30,16 +30,14 @@ end en_4_cycles;
 architecture Behavioral of en_4_cycles is
 
 -- declaración de señales auxiliares: contadores
-signal count_3megas : unsigned (0 downto 0);
 
-signal count_en_4_ciclos : unsigned (1 downto 0);
-signal next_count_3megas : unsigned (0 downto 0);
-signal next_count_en_4_ciclos : unsigned (1 downto 0);
+
+signal count : unsigned (1 downto 0) := "00";
+signal next_count : unsigned (1 downto 0);
 
 -- declaración de señales auxiliares: cambio de estado
-signal current_state_clk_3megas, next_state_clk_3megas : STD_LOGIC := '0';
-signal current_state_en_4_ciclos, next_state_en_4_ciclos : STD_LOGIC := '0';
-signal current_state_en_2_ciclos, next_state_en_2_ciclos : STD_LOGIC := '0';
+
+signal aux_clk_3megas,aux_en_4_cycles : STD_LOGIC := '0';
 
 begin
 
@@ -49,55 +47,34 @@ process(clk_12megas, reset)
 begin
 
 if (reset = '1') then
-    count_3megas <= to_unsigned(0, 1);
-    count_en_4_ciclos <= to_unsigned(2, 2);
-    current_state_clk_3megas <= '0';
-    current_state_en_4_ciclos <= '0';
-    current_state_en_2_ciclos <= '0';
+    count <= to_unsigned(0, 2);
+        
 elsif (clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-    count_3megas <= next_count_3megas;
-    count_en_4_ciclos <= next_count_en_4_ciclos;
-    current_state_clk_3megas <= next_state_clk_3megas;
-    current_state_en_4_ciclos <= next_state_en_4_ciclos;
-    current_state_en_2_ciclos <= next_state_en_2_ciclos;
+    count <= next_count;
 end if;
-
 end process;
 
 -- lógica de estado siguiente
-process(reset, current_state_en_2_ciclos, current_state_clk_3megas, count_en_4_ciclos)
+process(count)
 begin
+aux_en_4_cycles <= '0';
+aux_clk_3megas <= '0';
 
-if (reset = '1') then
-    
-    next_state_clk_3megas <= '0';
-    next_state_en_4_ciclos <= '0';
-    next_state_en_2_ciclos <= '0';
+if (count > 1) then
+    aux_clk_3megas <= '1';
+end if;
 
-    
-else    
-    next_state_en_2_ciclos <= not current_state_en_2_ciclos;
-  
-    if (count_3megas = 1) then
-        next_state_clk_3megas <= not current_state_clk_3megas;
-    end if;
-    
-    if (count_en_4_ciclos = 3) then
-        next_state_en_4_ciclos <= '1';
-    else 
-        next_state_en_4_ciclos <= '0';
-    end if;
+if (count=2) then
+    aux_en_4_cycles <= '1';
 end if;
 
 end process;
 
-    next_count_3megas <= count_3megas + 1;
-    next_count_en_4_ciclos <=  count_en_4_ciclos + 1;
 
+next_count <= count +1;
 -- actualización de las salidas
-clk_3megas <= current_state_clk_3megas;
-en_4_cycles <= current_state_en_4_ciclos;
-en_2_cycles <= current_state_en_2_ciclos;
+en_2_cycles <= std_logic(count(0));
 
-
+en_4_cycles <= aux_en_4_cycles;
+clk_3megas <= aux_clk_3megas;
 end Behavioral;
