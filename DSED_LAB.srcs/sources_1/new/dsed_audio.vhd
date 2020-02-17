@@ -162,6 +162,5 @@ MEMORY:  blk_mem_gen_0
   );
   
   
- micro_LR<= SAMPLE_CLK_EDGE;
  
  end Behavioral;

@@ -37,44 +37,36 @@ end pwm;
 architecture Behavioral of pwm is
 
 signal last_sample_request : std_logic := '0';
-signal r_reg : unsigned (sample_size downto 0) := (others => '0');
-signal r_next : unsigned (sample_size downto 0) := (others => '0');
-signal buff:  std_logic := '0';
-signal next_buff:  std_logic := '0';
-constant MAX_CUENTA : unsigned(sample_size downto 0) := "100101011";
 
+signal r_reg : unsigned (sample_size downto 0) := (others => '0');
+signal r_next : unsigned (sample_size downto 0);
+signal buff_reg:  std_logic := '0';
+signal next_buff:  std_logic := '0';
+
+signal aux_last_sample_request,next_last_sample_request:  std_logic := '0';
+
+constant MAX_CUENTA : unsigned(sample_size downto 0) := "100101011"; -- 299
+    
 begin
 
 process(clk_12megas,reset)
 begin
     if (reset ='1') then
-        buff<='0';
+        buff_reg<='0';
         r_reg<= (others=>'0');
-        sample_request <= '0';
     elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
+        aux_last_sample_request <= next_last_sample_request;
         if(en_2_cycles='1') then
-            if (sample_in = "00000000") then
-                r_reg <= (others=>'0');
-                buff <= '0';
-            else
-                buff<=next_buff;
-                r_reg<= r_next;
-            end if;
-        end if;
-        
-        if (r_reg = MAX_CUENTA and last_sample_request = '0') then
-            sample_request <= '1';
-            last_sample_request <= '1';
-        else
-            sample_request <= '0';
-            last_sample_request <= '0';
+             buff_reg<=next_buff;
+             r_reg<= r_next;
         end if;
     end if;
 end process;
 
-process(r_reg)
+process(r_reg,sample_in)
 begin
-     if (r_reg = 299) then
+
+     if (r_reg = 299 or sample_in = "00000000") then
          r_next<=(others=>'0');
      else
          r_next<=r_reg+1;
@@ -85,6 +77,23 @@ next_buff <=
     '1' when (r_reg<unsigned(sample_in) or sample_in="00000000") else
     '0';
     
-pwm_pulse<= buff;
+pwm_pulse<= buff_reg;
+
+
+
+process(r_reg,aux_last_sample_request) 
+begin
+   if (r_reg = MAX_CUENTA and aux_last_sample_request = '0') then
+       sample_request <= '1';
+       next_last_sample_request <= '1';
+       
+   else
+       sample_request <= '0'; 
+       next_last_sample_request <= '0';
+   end if; 
+end process;
+last_sample_request <= aux_last_sample_request;
+
+
 
 end Behavioral;
