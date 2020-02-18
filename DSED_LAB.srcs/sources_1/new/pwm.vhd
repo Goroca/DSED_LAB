@@ -36,14 +36,10 @@ end pwm;
 
 architecture Behavioral of pwm is
 
-signal last_sample_request : std_logic := '0';
 
-signal r_reg : unsigned (sample_size downto 0) := (others => '0');
-signal r_next : unsigned (sample_size downto 0);
-signal buff_reg:  std_logic := '0';
-signal next_buff:  std_logic := '0';
+signal r_reg,r_next : unsigned (sample_size downto 0) := (others => '0');
 
-signal aux_last_sample_request,next_last_sample_request:  std_logic := '0';
+signal aux_sample_request,last_sample_request:  std_logic := '0';
 
 constant MAX_CUENTA : unsigned(sample_size downto 0) := "100101011"; -- 299
     
@@ -52,12 +48,10 @@ begin
 process(clk_12megas,reset)
 begin
     if (reset ='1') then
-        buff_reg<='0';
         r_reg<= (others=>'0');
     elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-        aux_last_sample_request <= next_last_sample_request;
+        last_sample_request <= aux_sample_request;
         if(en_2_cycles='1') then
-             buff_reg<=next_buff;
              r_reg<= r_next;
         end if;
     end if;
@@ -73,26 +67,22 @@ begin
      end if;
 end process;
 
-next_buff <= 
-    '1' when (r_reg<unsigned(sample_in) or sample_in="00000000") else
+pwm_pulse <= 
+    '1' when ((r_reg<unsigned(sample_in) or sample_in="00000000") and reset = '0') else
     '0';
     
-pwm_pulse<= buff_reg;
 
 
 
-process(r_reg,aux_last_sample_request) 
+process(r_reg,last_sample_request) 
 begin
-   if (r_reg = MAX_CUENTA and aux_last_sample_request = '0') then
-       sample_request <= '1';
-       next_last_sample_request <= '1';
-       
+   if (r_reg = MAX_CUENTA and last_sample_request = '0') then
+       aux_sample_request <= '1';
    else
-       sample_request <= '0'; 
-       next_last_sample_request <= '0';
+       aux_sample_request <= '0';
    end if; 
 end process;
-last_sample_request <= aux_last_sample_request;
+sample_request <= aux_sample_request;
 
 
 

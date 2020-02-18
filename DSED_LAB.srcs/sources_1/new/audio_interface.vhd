@@ -119,7 +119,7 @@ audio: pwm
         pwm_pulse => jack_pwm);
         
         
-process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request)
+process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request,aux_sample_out_ready)
 begin
 
   if (record_enable ='0') then

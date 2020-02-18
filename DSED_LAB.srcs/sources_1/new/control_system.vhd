@@ -36,6 +36,7 @@ entity control_system is
            SW1 : in STD_LOGIC;
            clk : in STD_LOGIC;
            BTNL : in STD_LOGIC;
+           BTNR : in STD_LOGIC;
            BTNC : in STD_LOGIC;
            ADDR : out STD_LOGIC;
            LAST_ADDR : out STD_LOGIC);

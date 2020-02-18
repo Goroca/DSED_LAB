@@ -117,7 +117,7 @@ next_x0 <= Sample_In;
 sum_out <= sum_in0 + sum_in1;
 
 
-mul_out <= mul_in0*mul_in1;
+--mul_out <= mul_in0*mul_in1;  Hay que arreglarlo
 
 
 with state select mul_in0 <=
@@ -146,9 +146,9 @@ with state select sum_in1 <=
     R2 when "110",
     (others=>'0') when others;
 
-with state select aux_Sample_Out <=
-    R2(((sample_size-1)*2-1) downto sample_size) when "111",                         
-    last_aux_Sample_Out when others;
+--with state select aux_Sample_Out <=
+--    R2(((sample_size-1)*2-1) downto sample_size) when "111",                         
+--    last_aux_Sample_Out when others;
 
     
 with state select next_R1 <=
