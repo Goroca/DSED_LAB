@@ -131,7 +131,7 @@ begin
   end if;
 
   if(play_enable='0') then
-    aux_sample_in <= aux_sample_out; --Para desabilitar poner: (others=>'0')
+    aux_sample_in <= (others => '0');    --Para desabilitar poner: (others=>'0')
     sample_request <= '0';     
   else
     aux_sample_in <= sample_in;

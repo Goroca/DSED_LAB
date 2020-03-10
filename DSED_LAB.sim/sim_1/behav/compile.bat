@@ -1,7 +1,7 @@
 @echo off
 set xv_path=C:\\Xilinx\\Vivado\\2017.2\\bin
-echo "xvhdl -m64 --relax -prj dsed_audio_vhdl.prj"
-call %xv_path%/xvhdl  -m64 --relax -prj dsed_audio_vhdl.prj -log xvhdl.log
+echo "xvhdl -m64 --relax -prj FSMD_microphone_tb2_vhdl.prj"
+call %xv_path%/xvhdl  -m64 --relax -prj FSMD_microphone_tb2_vhdl.prj -log xvhdl.log
 call type xvhdl.log > compile.log
 if "%errorlevel%"=="1" goto END
 if "%errorlevel%"=="0" goto SUCCESS
