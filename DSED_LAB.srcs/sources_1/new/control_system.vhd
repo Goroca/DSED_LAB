@@ -41,11 +41,12 @@ entity control_system is
            play_en : out STD_LOGIC;
            record_en : out STD_LOGIC;
                     
-           filter_select   : out STD_LOGIC;
+           filter_select      : out STD_LOGIC;
            filter_in          : out signed (sample_size-1 downto 0);
            filter_In_enable   : out STD_LOGIC;
-           filter_out          : in signed (sample_size-1 downto 0);          
+           filter_out         : in signed (sample_size-1 downto 0);          
            filter_Out_ready   : in STD_LOGIC;
+           
            --RAM
            ADDR : out STD_LOGIC_VECTOR(18 DOWNTO 0);
            DATA_IN : out STD_LOGIC_VECTOR (sample_size-1 downto 0);
@@ -101,17 +102,14 @@ signal aux_filter_select : STD_LOGIC :='0';
 signal aux_record_ADDR, aux_play_ADDR, aux_play_reverse_ADDR : unsigned(18 downto 0) := (others => '0');
 signal next_record_ADDR, next_play_ADDR, next_play_reverse_ADDR : unsigned(18 downto 0) := (others => '0'); 
 
-signal sample_out_filter_MSB : STD_LOGIC :='0';
-signal sample_out_filter_downtoLSB : std_logic_vector(sample_size-2 downto 0) := (others => '0');
-signal sample_out_filter_binary : std_logic_vector(sample_size-1 downto 0) := (others => '0');
 
+signal aux_filter_out, aux_filter_out_STD : std_logic_vector(sample_size-1 downto 0) := (others => '0');
+signal aux_filter_in, filter_in_SIGNED : std_logic_vector(sample_size-1 downto 0) := (others => '0');
 signal start_play ,next_start_play  : STD_LOGIC :='0';
 
 begin
 
---sample_out_filter_MSB <= sample_out_filter(sample_size-1);
---sample_out_filter_downtoLSB <= std_logic_vector(sample_out_filter(sample_size-2 downto 0));
---sample_out_filter_binary <= (not sample_out_filter_MSB) & sample_out_filter_downtoLSB;
+
 
 -- lógica de cambio de estado
 process (clk_12MHz, reset)
@@ -164,6 +162,8 @@ led_record <= '0';
 led_play <= '0';
 next_start_play <= '0';
 
+--FILTER
+aux_filter_select <= '0';
 
 case(state) is
     when IDLE =>
@@ -171,7 +171,7 @@ case(state) is
         aux_record_en <= '0';
         aux_reset_RAM <= '0';        
         next_play_ADDR <= (others => '0');
-    
+        next_play_reverse_ADDR <= aux_record_ADDR;
         if (BTNC = '1' ) then
             next_state <= CLEAR;
         elsif (BTNL = '1') then
@@ -199,8 +199,8 @@ case(state) is
         next_play_reverse_ADDR <= (others => '0');
         
     when RECORDING =>
-        aux_play_en <= '0'; --XXX
-        aux_record_en <= '1'; --XXX
+        aux_play_en <= '0'; 
+        aux_record_en <= '1';
         led_record <= '1';
         aux_EN_RAM <= '1';
         aux_ENW_RAM <= "1";
@@ -238,34 +238,52 @@ case(state) is
         end if;
     
     
---    when PLAY_REVERSE =>
---        aux_play_en <= '1';
---        aux_sample_in_PWM <= sample_out_RAM;
+    when PLAY_REVERSE =>
+        aux_play_en <= '1';
+        aux_record_en <= '0';
+        aux_EN_RAM <= '1';
+        aux_ENW_RAM <= "0";
+        led_play <= '1';        
+        led_record <= '1';        
+        if (sample_request='1' or start_play= '1') then
+            next_play_reverse_ADDR <= aux_play_reverse_ADDR -1;
+        end if;
+                
+        if (aux_play_reverse_ADDR = "0000000000000000000") then
+            next_state <= IDLE;
+            next_play_reverse_ADDR <= (others => '0');
+        else
+            next_state <= PLAY_REVERSE;
         
---        if (aux_play_reverse_ADDR <= (others => '0') or reset = '1') then
---            next_state <= IDLE;
-            
---            next_play_reverse_ADDR <= MAX_ADDR;
---        else
---            next_state <= PLAY_REVERSE;
-            
---            next_play_reverse_ADDR <= aux_play_reverse_ADDR - 1;
---        end if;  
+            aux_ADDR <= std_logic_vector(aux_play_reverse_ADDR);
+            aux_sample_in <= DATA_OUT;
+        end if;
         
---    when PLAY_LPF =>
---        aux_play_en <= '1';
---        aux_filter_select <= '0';
---        aux_sample_in_PWM <= sample_out_filter_binary;
+    when PLAY_LPF =>
+        aux_play_en <= '1';
+        aux_record_en <= '0';
+        aux_EN_RAM <= '1';
+        aux_ENW_RAM <= "0";
+        led_play <= '1';
+    
+    if (sample_request='1' or start_play= '1') then
+        next_play_ADDR <= aux_play_ADDR + 1;
+    end if;
+    
+    if (aux_play_ADDR >= aux_record_ADDR) then
+        next_state <= IDLE;
+        next_play_ADDR <= (others => '0');
+    else
+        next_state <= PLAY;
+
+        aux_ADDR <= std_logic_vector(aux_play_ADDR);
         
---        if (aux_play_ADDR >= MAX_ADDR or reset = '1') then
---            next_state <= IDLE;
-            
---            next_play_ADDR <= (others => '0');
---        else
---            next_state <= PLAY_LPF;
-            
---            next_play_ADDR <= aux_play_ADDR + 1;
---        end if;
+        --filter_in        
+        --filter_In_enable 
+        aux_sample_in <= aux_filter_out;            
+        aux_filter_in <= DATA_OUT;   
+        --filter_Out_ready 
+    end if;
         
 --    when PLAY_HPF =>
 --        aux_play_en <= '1';
@@ -284,12 +302,10 @@ case(state) is
     when others => 
         next_state <= IDLE;
     
-end case;
+    end case;
 end process;
 
-filter_select <= '0';
-filter_in <= (others =>'0');
-filter_In_enable <= '0';
+
 
 --RAM
 ADDR <= aux_ADDR;
@@ -306,6 +322,13 @@ sample_in <= aux_sample_in;
 play_en <= aux_play_en;
 record_en <= aux_record_en;
 
+
+--FILTER
 filter_select <= aux_filter_select;
 
+aux_filter_out_STD <= std_logic_vector(filter_out);
+aux_filter_out <= not (aux_filter_out_STD(sample_size-1)) & aux_filter_out_STD(sample_size-2 downto 0);
+
+filter_in_SIGNED <= not (aux_filter_in(sample_size-1)) & aux_filter_in(sample_size-2 downto 0);
+filter_in <= signed(filter_in_SIGNED);
 end Behavioral;
