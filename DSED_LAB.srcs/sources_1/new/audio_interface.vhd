@@ -36,7 +36,7 @@ entity audio_interface is
            --To/From the microphone
            micro_clk : out STD_LOGIC;
            micro_data : in STD_LOGIC;
-           micro_LR : out STD_LOGIC := '0';
+           micro_LR : out STD_LOGIC := '1';
            --Playing ports
    
            --To/From the controller
@@ -80,14 +80,11 @@ end component;
 -- señales auxiliares
 signal aux_en_2_ciclos, aux_en_4_ciclos : STD_LOGIC;
 
-
 --record
 signal aux_sample_out:  STD_LOGIC_VECTOR (sample_size-1 downto 0);
-signal aux_sample_out_ready:  STD_LOGIC;
 
---play
-signal aux_sample_request : STD_LOGIC;
-signal aux_sample_in : std_logic_vector(sample_size-1 downto 0);
+
+signal enable_FSMD, enable_PWM : std_logic;        
 
 begin
   
@@ -104,41 +101,23 @@ microphone: FSMD_microphone
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
-        enable_4_cycles => aux_en_4_ciclos,
+        enable_4_cycles => enable_FSMD, 
         micro_data => micro_data,
         sample_out => aux_sample_out, 
-        sample_out_ready => aux_sample_out_ready);
+        sample_out_ready => sample_out_ready);
 
 audio: pwm
     port map(
         clk_12megas => clk_12megas,
         reset => reset,
-        en_2_cycles => aux_en_2_ciclos,
-        sample_in => aux_sample_in, 
-        sample_request => aux_sample_request,
+        en_2_cycles => enable_PWM,
+        sample_in => sample_in,
+        sample_request => sample_request,
         pwm_pulse => jack_pwm);
         
-        
-process (record_enable,play_enable,aux_sample_out,sample_in,aux_sample_request,aux_sample_out_ready)
-begin
+enable_FSMD <= aux_en_4_ciclos and record_enable;
+enable_PWM <= aux_en_2_ciclos and play_enable;
 
-  if (record_enable ='0') then
-    sample_out <= (others => '0');
-    sample_out_ready <= '0'; 
-  else
-    sample_out_ready <= aux_sample_out_ready;
-    sample_out <= aux_sample_out;   
-  end if;
-
-  if(play_enable='0') then
-    aux_sample_in <= aux_sample_out; --Para desabilitar poner: (others=>'0')
-    sample_request <= '0';     
-  else
-    aux_sample_in <= sample_in;
-    sample_request <= aux_sample_request;      
-  end if;
-  
-end process;
-
-
+sample_out <= aux_sample_out;
+ 
 end Behavioral;
