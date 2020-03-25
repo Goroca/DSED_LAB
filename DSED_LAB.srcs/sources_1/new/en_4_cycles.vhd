@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- 
--- Engineers: Carlos Gómez Rodríguez, Alejandro Ramos Martín
+-- Engineer: CARLOS GÓMEZ and ALEJANDRO RAMOS
 -- 
 -- Create Date: 08.11.2019 14:34:59
 -- Module Name: en_4_cycles - Behavioral

@@ -49,7 +49,10 @@ micro_data : in STD_LOGIC;
 micro_LR : out STD_LOGIC;
 --To/From the mini-jack
 jack_sd : out STD_LOGIC;
-jack_pwm : out STD_LOGIC
+jack_pwm : out STD_LOGIC;
+--LEDS
+led_record : out STD_LOGIC;
+led_play : out STD_LOGIC
 );
 end dsed_audio;
 
@@ -122,10 +125,13 @@ component control_system
                       
            play_en : out STD_LOGIC;
            record_en : out STD_LOGIC;
-                    
-           filter_select   : out STD_LOGIC;
+           
+           --FILTER         
+           filter_select      : out STD_LOGIC;
            filter_in          : out signed (sample_size-1 downto 0);
-           filter_out      : in signed (sample_size-1 downto 0);          
+           filter_In_enable   : out STD_LOGIC;
+           filter_out         : in signed (sample_size-1 downto 0);          
+           filter_Out_ready   : in STD_LOGIC;
            
            --RAM
            ADDR : out STD_LOGIC_VECTOR(18 DOWNTO 0);
@@ -141,7 +147,11 @@ component control_system
            
            --FSMD
            sample_out: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
-           sample_out_ready: in STD_LOGIC);
+           sample_out_ready: in STD_LOGIC;
+           
+           --LEDS
+           led_record : out STD_LOGIC;
+           led_play : out STD_LOGIC);
 end component;
 
 
@@ -156,6 +166,13 @@ end component;
   signal   aux_sample_in, aux_sample_out : std_logic_vector(sample_size-1 downto 0);
   signal   aux_sample_request, aux_sample_out_ready : std_logic;
   
+  --FILTER
+  signal filter_select      :  STD_LOGIC;
+  signal filter_in          :  signed (sample_size-1 downto 0);
+  signal filter_In_enable   :  STD_LOGIC;
+  signal filter_out         :  signed (sample_size-1 downto 0);     
+  signal filter_Out_ready   :  STD_LOGIC;
+
 begin
 
 CLK: clk_12MHz
@@ -169,7 +186,7 @@ audio: audio_interface
            reset => reset,
            --Recording ports
            --To/From the controller
-           record_enable => aux_record_en,          
+           record_enable => aux_record_en,--aux_record_en,          
            sample_out => aux_sample_out,--: out STD_LOGIC_VECTOR (sample_size-1 downto 0);
            sample_out_ready => aux_sample_out_ready,--: out STD_LOGIC;
            --To/From the microphone
@@ -178,7 +195,7 @@ audio: audio_interface
            micro_LR => micro_LR,--: out STD_LOGIC;
            --Playing ports
            --To/From the controller
-           play_enable => aux_play_en, --: in STD_LOGIC;
+           play_enable => aux_play_en,--aux_play_en, --: in STD_LOGIC;
            sample_in => aux_sample_in, --: in std_logic_vector(sample_size-1 downto 0);
            sample_request => aux_sample_request, --: out std_logic;
            --To/From the mini-jack
@@ -190,11 +207,11 @@ FILTER: fir_filter
     Port Map( 
    clk                =>  clk_system,--: in STD_LOGIC;
    Reset              =>  reset,--: in STD_LOGIC;
-   Sample_In          =>  (others=>'0'),--: in signed (sample_size-1 downto 0);
-   Sample_In_enable   =>  '0',--: in STD_LOGIC;
-   filter_select      =>  '0',--: in STD_LOGIC; --0 lowpass, 1 highpass
-   Sample_Out         =>  open,--: out signed (sample_size-1 downto 0);
-   Sample_Out_ready   =>  open--: out STD_LOGIC
+   Sample_In          =>  filter_in,--: in signed (sample_size-1 downto 0);
+   Sample_In_enable   =>  filter_In_enable,--: in STD_LOGIC;
+   filter_select      =>  filter_select,--: in STD_LOGIC; --0 lowpass, 1 highpass
+   Sample_Out         =>  filter_out,--: out signed (sample_size-1 downto 0);
+   Sample_Out_ready   =>  filter_Out_ready--: out STD_LOGIC
 );
 
 MEMORY:  blk_mem_gen_0
@@ -221,15 +238,18 @@ MEMORY:  blk_mem_gen_0
                         
              play_en => aux_play_en,                   --: out STD_LOGIC;
              record_en => aux_record_en,                 --: out STD_LOGIC;
-                      
-             filter_select => open,             --: out STD_LOGIC;
-             filter_in => open,                 --: out signed (sample_size-1 downto 0);
-             filter_out => (others => '0'),                --: in signed (sample_size-1 downto 0);          
              
+             --FILTER         
+             filter_select => filter_select,             --: out STD_LOGIC;
+             filter_in => filter_in,                 --: out signed (sample_size-1 downto 0);
+             filter_In_enable => filter_In_enable ,                  --: out STD_LOGIC;
+             filter_out => filter_out,                --: in signed (sample_size-1 downto 0);          
+             filter_Out_ready  => filter_Out_ready   ,              --: in STD_LOGIC;
+           
              --RAM
              ADDR => aux_ADDR,                      --: out STD_LOGIC_VECTOR(18 DOWNTO 0);
-             DATA_IN => aux_DATA_OUT,                   --: out STD_LOGIC_VECTOR (sample_size-1 downto 0);
-             DATA_OUT => aux_DATA_IN,                  --: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
+             DATA_IN => aux_DATA_IN,                   --: out STD_LOGIC_VECTOR (sample_size-1 downto 0);
+             DATA_OUT => aux_DATA_OUT,                  --: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
              reset_RAM => rst_RAM,                 --: out STD_LOGIC;
              EN_RAM => aux_EN_RAM,                    --: out STD_LOGIC;
              ENW_RAM => aux_ENW_RAM,                   --: out STD_LOGIC_VECTOR (0 downto 0);
@@ -240,7 +260,8 @@ MEMORY:  blk_mem_gen_0
              
              --FSMD
              sample_out => aux_sample_out,                --: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
-             sample_out_ready => aux_sample_out_ready);          --: in STD_LOGIC);
-
- 
+             sample_out_ready => aux_sample_out_ready,          --: in STD_LOGIC);
+             --LEDS
+             led_record => led_record,--: out STD_LOGIC;
+             led_play => led_play); --: out STD_LOGIC); 
  end Behavioral;
