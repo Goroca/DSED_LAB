@@ -45,20 +45,25 @@ end datapath;
 
 architecture Behavioral of datapath is
 
-signal R1, R2, R3 : signed (((sample_size-1)*2-1) downto 0) := (others => '0');
-signal next_R1, next_R2 : signed (((sample_size-1)*2-1) downto 0);
 
-signal c0, c1, c2, c3, c4 : signed (sample_size-1 downto 0) := (others=>'0');
+
+signal c0, c1, c2  : signed (sample_size-1 downto 0) := (others=>'0');
+-- signal c3, c4  : signed (sample_size-1 downto 0) := (others=>'0');
+
 signal x0, x1, x2, x3, x4 : signed (sample_size-1 downto 0) := (others=>'0');
 signal next_x0, next_x1, next_x2, next_x3, next_x4 : signed (sample_size-1 downto 0);
 
-signal aux_Sample_Out :  signed (sample_size-1 downto 0) := (others =>'0');
-signal last_aux_Sample_Out :  signed (sample_size-1 downto 0) := (others =>'0');
+signal mul_in0,mul_in1              :  signed ((sample_size -1) downto 0);
 
-signal        sum_in0,sum_in1,sum_out :  signed (((sample_size-1)*2-1) downto 0);
-signal        mul_in0,mul_in1,mul_out :  signed (((sample_size-1)*2-1) downto 0);
+signal R1, R2, R3                   : signed ((sample_size*2-1) downto 0) := (others => '0');
+signal next_R1, next_R2, mul_out    : signed ((sample_size*2-1) downto 0);
 
-signal aux_mul_in0, aux_mul_in1 : signed (((sample_size-1)*2-1) downto 0);
+signal aux_Sample_Out               :  signed (sample_size-1 downto 0) := (others =>'0');
+signal last_aux_Sample_Out          :  signed (sample_size-1 downto 0) := (others =>'0');
+
+signal sum_in0,sum_in1,sum_out      :  signed ((sample_size*2 -1) downto 0);
+
+signal aux_x0, aux_x1, aux_x3, aux_x4 : signed ((sample_size*2-1) downto 0);
 
 begin
 
@@ -66,15 +71,15 @@ filterselect_process: process(filter_select)
 begin
 if (filter_select='0') then
     c0 <= "00000101";
-    c4 <= "00000101";
+--    c4 <= "00000101";
     c1 <= "00011111";
-    c3 <= "00011111";
+--    c3 <= "00011111";
     c2 <= "00111001";
 else
     c0 <= "11111111";
-    c4 <= "11111111";
+--    c4 <= "11111111";
     c1 <= "11100110";
-    c3 <= "11100110";
+--    c3 <= "11100110";
     c2 <= "01001101";
 end if;
 end process;
@@ -116,39 +121,43 @@ next_x0 <= Sample_In;
 
 sum_out <= sum_in0 + sum_in1;
 
+mul_out <= mul_in0*mul_in1;
 
---mul_out <= mul_in0*mul_in1;  Hay que arreglarlo
+aux_x0 <= ((sample_size*2-1) downto sample_size => x0(sample_size-1)) & x0;
+aux_x1 <= ((sample_size*2-1) downto sample_size => x1(sample_size-1)) & x1;
+aux_x3 <= ((sample_size*2-1) downto sample_size => x3(sample_size-1)) & x3;
+aux_x4 <= ((sample_size*2-1) downto sample_size => x4(sample_size-1)) & x4;
 
 
 with state select mul_in0 <=
-	(((sample_size-1)*2-1) downto sample_size => C2(sample_size-1)) & C2 when "010",
-	(((sample_size-1)*2-1) downto sample_size => C0(sample_size-1)) & C0 when "011",
-	(((sample_size-1)*2-1) downto sample_size => C1(sample_size-1)) & C1 when "100",
+	C2 when "010",
+	C0 when "011",
+	C1 when "100",
     (others=>'0') when others;
 
 with state select mul_in1 <=
-    (((sample_size-1)*2-1) downto sample_size => X2(sample_size-1)) & x2 when "010",
-    R2 when "011",
-    R2 when "100",
+    x2 when "010",
+    R2((sample_size -1) downto 0) when "011",
+    R2((sample_size -1) downto 0) when "100",
     (others=>'0') when others;
 
 with state select sum_in0 <=
-    (((sample_size-1)*2-1) downto sample_size => x0(sample_size-1)) & x0 when "010",
-    (((sample_size-1)*2-1) downto sample_size => x1(sample_size-1)) & x1 when "011",
+    aux_x0 when "010",
+    aux_x1 when "011",
     R1 when "101",
     R1 when "110",
     (others=>'0') when others;
         
 with state select sum_in1 <=
-    (((sample_size-1)*2-1) downto sample_size => x4(sample_size-1)) & x4 when "010",
-    (((sample_size-1)*2-1) downto sample_size => x3(sample_size-1)) & x3 when "011",
+    aux_x4 when "010",
+    aux_x3 when "011",
     R2 when "101",
     R2 when "110",
     (others=>'0') when others;
 
---with state select aux_Sample_Out <=
---    R2(((sample_size-1)*2-1) downto sample_size) when "111",                         
---    last_aux_Sample_Out when others;
+with state select aux_Sample_Out <=
+    R2((sample_size*2-1) downto sample_size) when "111",                         
+    last_aux_Sample_Out when others;
 
     
 with state select next_R1 <=
