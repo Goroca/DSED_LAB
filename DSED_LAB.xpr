@@ -79,39 +79,23 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/control.vhd">
-<<<<<<< HEAD
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/control_system.vhd">
-=======
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sources_1/new/datapath.vhd">
-=======
-      <File Path="$PSRCDIR/sources_1/new/control_system.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-<<<<<<< HEAD
-=======
       <File Path="$PSRCDIR/sources_1/new/datapath.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
       <File Path="$PSRCDIR/sources_1/new/en_4_cycles.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -156,105 +140,76 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/FSMD_microphone_tb1.vhd">
-=======
       <File Path="$PSRCDIR/sim_1/new/DSED_TB.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sim_1/new/fir_filter_basicTB.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/FSMD_microphone_tb2.vhd">
-=======
       <File Path="$PSRCDIR/sim_1/new/FSMD_microphone_tb1.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/Memory_tb.vhd">
-=======
-      <File Path="$PSRCDIR/sim_1/new/pwm_tb.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/audio_interface_tb.vhd">
-=======
-      <File Path="$PSRCDIR/sim_1/new/FSMD_microphone_tb3.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/en_4_cycles_tb.vhd">
-=======
       <File Path="$PSRCDIR/sim_1/new/FSMD_microphone_tb2.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/Memory_tb.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/audio_interface_tb.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/en_4_cycles_tb.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sim_1/new/fir_filter_basic2TB.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-<<<<<<< HEAD
       <File Path="$PSRCDIR/sim_1/new/fir_filter_basicTB.vhd">
-=======
-      <File Path="$PSRCDIR/sim_1/new/fir_filter_basic2TB.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sim_1/new/fir_filter_tb.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-<<<<<<< HEAD
       <File Path="$PSRCDIR/sim_1/new/pwm_tb.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sim_1/new/tb_avanzado.vhd">
-=======
-      <File Path="$PSRCDIR/sim_1/new/Memory_tb.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-<<<<<<< HEAD
-      <File Path="$PSRCDIR/sim_1/new/DSED_TB.vhd">
-=======
-      <File Path="$PSRCDIR/sim_1/new/audio_interface_tb.vhd">
->>>>>>> 875718f144c36069df165592f11d0ed4f9724157
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
