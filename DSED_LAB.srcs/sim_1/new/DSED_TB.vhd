@@ -150,7 +150,9 @@ begin
         
     
     
-    BTNL <= '0';    
+    BTNL <= '0'; 
+    SW0 <= '1';
+    SW1 <= '1';
     wait for 10 ms;
     BTNR <= '1';
     wait for 15 ms;
