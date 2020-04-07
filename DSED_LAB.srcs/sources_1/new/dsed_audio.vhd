@@ -131,7 +131,7 @@ component control_system
            filter_in          : out signed (sample_size-1 downto 0);
            filter_In_enable   : out STD_LOGIC;
            filter_out         : in signed (sample_size-1 downto 0);          
-           filter_Out_ready   : in STD_LOGIC;
+           --filter_Out_ready   : in STD_LOGIC;
            
            --RAM
            ADDR : out STD_LOGIC_VECTOR(18 DOWNTO 0);
@@ -171,7 +171,7 @@ end component;
   signal filter_in          :  signed (sample_size-1 downto 0);
   signal filter_In_enable   :  STD_LOGIC;
   signal filter_out         :  signed (sample_size-1 downto 0);     
-  signal filter_Out_ready   :  STD_LOGIC;
+  --signal filter_Out_ready   :  STD_LOGIC;
 
 begin
 
@@ -211,7 +211,7 @@ FILTER: fir_filter
    Sample_In_enable   =>  filter_In_enable,--: in STD_LOGIC;
    filter_select      =>  filter_select,--: in STD_LOGIC; --0 lowpass, 1 highpass
    Sample_Out         =>  filter_out,--: out signed (sample_size-1 downto 0);
-   Sample_Out_ready   =>  filter_Out_ready --: out STD_LOGIC
+   Sample_Out_ready   =>  open--: out STD_LOGIC
 );
 
 MEMORY:  blk_mem_gen_0
@@ -242,9 +242,9 @@ MEMORY:  blk_mem_gen_0
              --FILTER         
              filter_select => filter_select,             --: out STD_LOGIC;
              filter_in => filter_in,                 --: out signed (sample_size-1 downto 0);
-             filter_In_enable => filter_In_enable,                  --: out STD_LOGIC;
+             filter_In_enable => filter_In_enable ,                  --: out STD_LOGIC;
              filter_out => filter_out,                --: in signed (sample_size-1 downto 0);          
-             filter_Out_ready  => filter_Out_ready,              --: in STD_LOGIC;
+             --filter_Out_ready  => filter_Out_ready   ,              --: in STD_LOGIC;
            
              --RAM
              ADDR => aux_ADDR,                      --: out STD_LOGIC_VECTOR(18 DOWNTO 0);

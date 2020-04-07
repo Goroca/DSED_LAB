@@ -42,7 +42,7 @@ signal Sample_Out : signed (sample_size-1 downto 0);
 signal int_Sample_Out : integer;
 
 signal Reset : std_logic := '0';
-signal filter_select : std_logic := '1';
+signal filter_select : std_logic := '0';
 signal Sample_In_enable : std_logic := '0';
 signal Sample_Out_ready : std_logic;
 

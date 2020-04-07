@@ -46,7 +46,7 @@ entity control_system is
            filter_in          : out signed (sample_size-1 downto 0);
            filter_In_enable   : out STD_LOGIC;
            filter_out         : in signed (sample_size-1 downto 0);          
-           filter_Out_ready   : in STD_LOGIC;
+           --filter_Out_ready   : in STD_LOGIC;
            
            --RAM
            ADDR : out STD_LOGIC_VECTOR(18 DOWNTO 0);
@@ -70,6 +70,7 @@ entity control_system is
 end control_system;
 
 architecture Behavioral of control_system is
+
 
 constant IDLE : unsigned(2 downto 0) := "000";
 constant RECORDING : unsigned(2 downto 0) := "001";
@@ -140,7 +141,7 @@ end if;
 end process;
 
 -- lógica de estado siguiente
-process(state,BTNC, BTNL, BTNR, SW0, SW1, aux_record_ADDR, aux_play_reverse_ADDR,last_sample_in,last_filter_in, sample_out_ready, sample_out, aux_play_ADDR, sample_request, DATA_OUT,start_play,last_ADDR,last_DATA_IN,aux_filter_out,filter_Out_ready)
+process(state,BTNC, BTNL, BTNR, SW0, SW1, aux_record_ADDR, aux_play_reverse_ADDR,last_sample_in,last_filter_in, sample_out_ready, sample_out, aux_play_ADDR, sample_request, DATA_OUT,start_play,last_ADDR,last_DATA_IN,aux_filter_out)
 
 begin
 aux_play_en <= '0';
@@ -265,15 +266,12 @@ case(state) is
         aux_EN_RAM <= '1';
         aux_ENW_RAM <= "0";
         led_play <= '1';
-        aux_filter_select <= '0'; --lowpass
+        aux_filter_select <= '1';
     if (sample_request='1' or start_play= '1') then
         next_play_ADDR <= aux_play_ADDR + 1;
         aux_filter_In_enable <= '1';
-        --aux_sample_in <= aux_filter_out;            
-        aux_filter_in <= DATA_OUT;
-        if (filter_Out_ready='1') then
-            aux_sample_in <= aux_filter_out;
-        end if;   
+        aux_sample_in <= aux_filter_out;            
+        aux_filter_in <= DATA_OUT;   
     end if;
     
     if (aux_play_ADDR >= aux_record_ADDR) then
@@ -289,16 +287,12 @@ case(state) is
         aux_EN_RAM <= '1';
         aux_ENW_RAM <= "0";
         led_play <= '1';
-        aux_filter_select <= '1'; --highpass
 
         if (sample_request='1' or start_play= '1') then
             next_play_ADDR <= aux_play_ADDR + 1;
             aux_filter_In_enable <= '1';
-            --aux_sample_in <= aux_filter_out;            
-            aux_filter_in <= DATA_OUT;
-            if (filter_Out_ready='1') then
-                aux_sample_in <= aux_filter_out;
-            end if;   
+            aux_sample_in <= aux_filter_out;            
+            aux_filter_in <= DATA_OUT;   
         end if;
 
         if (aux_play_ADDR >= aux_record_ADDR) then

@@ -121,29 +121,29 @@ begin
     
     BTNL <= '1';
     for i in 0 to 40 loop
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '0';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '0';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <=  '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <=  '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '0';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <=  '1';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '0';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <= '0';
-    wait for 2 us;
+    wait for 200 us;
     micro_data <=  '1';
             
     END LOOP;        
@@ -153,9 +153,9 @@ begin
     BTNL <= '0'; 
     SW0 <= '1';
     SW1 <= '1';
-    wait for 10 us;
+    wait for 10 ms;
     BTNR <= '1';
-    wait for 15 us;
+    wait for 15 ms;
     BTNR <= '0';   
     wait;           
     
