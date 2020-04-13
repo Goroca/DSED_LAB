@@ -44,7 +44,7 @@ entity audio_interface is
            sample_in: in STD_LOGIC_VECTOR (sample_size-1 downto 0);
            sample_request: out STD_LOGIC;
            --To/From the mini-jack
-           jack_sd : out STD_LOGIC := '1';
+           jack_sd : out STD_LOGIC;
            jack_pwm : out STD_LOGIC);
 end audio_interface;
 
@@ -119,5 +119,5 @@ enable_FSMD <= aux_en_4_ciclos and record_enable;
 enable_PWM <= aux_en_2_ciclos and play_enable;
 
 sample_out <= aux_sample_out;
- 
+ jack_sd <= AUDIO_OP_CONTROL;
 end Behavioral;

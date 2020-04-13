@@ -52,7 +52,17 @@ jack_sd : out STD_LOGIC;
 jack_pwm : out STD_LOGIC;
 --LEDS
 led_record : out STD_LOGIC;
-led_play : out STD_LOGIC
+led_play : out STD_LOGIC;
+--DISPLAY
+CA  : out std_logic;
+CB  : out std_logic;
+CC  : out std_logic;
+CD  : out std_logic;
+CE  : out std_logic;
+CF  : out std_logic;
+CG  : out std_logic;
+AN  : out STD_LOGIC_VECTOR (7 downto 0);
+DP  : out std_logic
 );
 end dsed_audio;
 
@@ -151,9 +161,28 @@ component control_system
            
            --LEDS
            led_record : out STD_LOGIC;
-           led_play : out STD_LOGIC);
+           led_play : out STD_LOGIC;
+                      
+           --DISPLAY
+           seconds_left : out UNSIGNED (6 downto 0));
 end component;
 
+component Display 
+ Port ( 
+    clk_12MHz : in std_logic;
+    reset : in std_logic;
+    number : in unsigned (6 downto 0); --numero de segundos que quedan de grabación
+    CA  : out std_logic;
+    CB  : out std_logic;
+    CC  : out std_logic;
+    CD  : out std_logic;
+    CE  : out std_logic;
+    CF  : out std_logic;
+    CG  : out std_logic;
+    AN  : out STD_LOGIC_VECTOR (7 downto 0);
+    DP  : out std_logic
+);
+end component;
 
   signal   clk_system :  std_logic;
   signal   rst_RAM :  std_logic;
@@ -172,6 +201,9 @@ end component;
   signal filter_In_enable   :  STD_LOGIC;
   signal filter_out         :  signed (sample_size-1 downto 0);     
   --signal filter_Out_ready   :  STD_LOGIC;
+  
+  --DISPLAY
+  signal seconds_left         :  unsigned (6 downto 0);     
 
 begin
 
@@ -263,5 +295,24 @@ MEMORY:  blk_mem_gen_0
              sample_out_ready => aux_sample_out_ready,          --: in STD_LOGIC);
              --LEDS
              led_record => led_record,--: out STD_LOGIC;
-             led_play => led_play); --: out STD_LOGIC); 
- end Behavioral;
+             led_play => led_play, --: out STD_LOGIC); 
+                        
+             --DISPLAY
+             seconds_left => seconds_left);--: out UNSIGNED (6 downto 0);
+             
+secods: Display 
+              Port Map( 
+                 clk_12MHz => clk_system,--: in std_logic;
+                 reset => reset,--: in std_logic;
+                 number => seconds_left,--: in unsigned (6 downto 0); --numero de segundos que quedan de grabación
+                 CA  => CA,--: out std_logic;
+                 CB  => CB,--: out std_logic;
+                 CC  => CC,--: out std_logic;
+                 CD  => CD,--: out std_logic;
+                 CE  => CE,--: out std_logic;
+                 CF  => CF,--: out std_logic;
+                 CG  => CG,--: out std_logic;
+                 AN  => AN,--: out STD_LOGIC_VECTOR (7 downto 0);
+                 DP  => DP--: out std_logic
+             );
+end Behavioral;
