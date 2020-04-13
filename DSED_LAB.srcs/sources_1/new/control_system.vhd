@@ -319,7 +319,7 @@ end process;
 --Display
 process(samples_left)
 begin
-    aux_seconds_left <= (samples_left+20000-1)/20000;
+    aux_seconds_left <= (samples_left+SAMPLE_RATE-1)/SAMPLE_RATE;
 end process;
 seconds_left <= aux_seconds_left(4 downto 0);
 
