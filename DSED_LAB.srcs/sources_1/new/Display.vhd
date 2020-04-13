@@ -105,7 +105,7 @@ begin
         if (counter = x"A") then
             toDisplay <= decenas;
             aux_AN <= x"FD";
-        elsif (counter = "0") then
+        elsif (counter = x"0") then
             toDisplay<= unidades;
             aux_AN <= x"FE";
         end if;
