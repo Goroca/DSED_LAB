@@ -72,9 +72,12 @@ architecture Behavioral of dsed_audio is
 component clk_12MHz
     port (
         clk_in1 : in std_logic;
+        reset: in std_logic;
         clk_out1 : out std_logic
     );
 end component;
+
+
 
 component audio_interface
     Port ( clk_12megas : in STD_LOGIC;
@@ -164,14 +167,14 @@ component control_system
            led_play : out STD_LOGIC;
                       
            --DISPLAY
-           seconds_left : out UNSIGNED (6 downto 0));
+           seconds_left : out UNSIGNED (4 downto 0));
 end component;
 
 component Display 
  Port ( 
     clk_12MHz : in std_logic;
     reset : in std_logic;
-    number : in unsigned (6 downto 0); --numero de segundos que quedan de grabación
+    number : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
     CA  : out std_logic;
     CB  : out std_logic;
     CC  : out std_logic;
@@ -203,16 +206,19 @@ end component;
   --signal filter_Out_ready   :  STD_LOGIC;
   
   --DISPLAY
-  signal seconds_left         :  unsigned (6 downto 0);     
+  signal seconds_left         :  unsigned (4 downto 0);     
 
 begin
 
 CLK: clk_12MHz
     port map(
         clk_in1 => clk_100Mhz,
+        reset => reset,-- in std_logic;
         clk_out1 => clk_system
     );
 
+
+    
 audio: audio_interface
     Port Map( clk_12megas => clk_system,
            reset => reset,
@@ -298,13 +304,13 @@ MEMORY:  blk_mem_gen_0
              led_play => led_play, --: out STD_LOGIC); 
                         
              --DISPLAY
-             seconds_left => seconds_left);--: out UNSIGNED (6 downto 0);
+             seconds_left => seconds_left);--: out UNSIGNED (4 downto 0);
              
 secods: Display 
               Port Map( 
                  clk_12MHz => clk_system,--: in std_logic;
                  reset => reset,--: in std_logic;
-                 number => seconds_left,--: in unsigned (6 downto 0); --numero de segundos que quedan de grabación
+                 number => seconds_left,--: in unsigned (4 downto 0); --numero de segundos que quedan de grabación
                  CA  => CA,--: out std_logic;
                  CB  => CB,--: out std_logic;
                  CC  => CC,--: out std_logic;

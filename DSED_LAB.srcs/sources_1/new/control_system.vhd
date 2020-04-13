@@ -69,7 +69,7 @@ entity control_system is
            led_play : out STD_LOGIC;
            
            --DISPLAY
-           seconds_left : out UNSIGNED (6 downto 0));
+           seconds_left : out UNSIGNED (4 downto 0));
 end control_system;
 
 architecture Behavioral of control_system is
@@ -247,7 +247,7 @@ case(state) is
     
     
     when PLAY_REVERSE =>
-        samples_left <= aux_record_ADDR;
+        samples_left <= aux_play_reverse_ADDR;
         aux_play_en <= '1';
         aux_record_en <= '0';
         aux_EN_RAM <= '1';
@@ -319,9 +319,9 @@ end process;
 --Display
 process(samples_left)
 begin
-    aux_seconds_left <= samples_left/40000;
+    aux_seconds_left <= (samples_left+20000-1)/20000;
 end process;
-seconds_left <= aux_seconds_left(6 downto 0);
+seconds_left <= aux_seconds_left(4 downto 0);
 
 --RAM
 ADDR <= aux_ADDR;

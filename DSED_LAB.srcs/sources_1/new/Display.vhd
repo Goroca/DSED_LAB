@@ -36,7 +36,7 @@ entity Display is
  Port ( 
     clk_12MHz : in std_logic;
     reset : in std_logic;
-    number : in unsigned (6 downto 0); --numero de segundos que quedan de grabación
+    number : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
     CA  : out std_logic;
     CB  : out std_logic;
     CC  : out std_logic;
@@ -50,11 +50,11 @@ entity Display is
 end Display;
 
 architecture Behavioral of Display is
-signal counter, next_counter : unsigned (0 downto 0) := "0";
+signal counter, next_counter : unsigned (3 downto 0) := x"0";
 
 signal toDisplay, decenas, unidades : unsigned (3 downto 0) := (others => '0');
-signal aux_decenas, next_decenas, aux_unidades : unsigned (6 downto 0) := (others => '0');
-signal next_unidades : unsigned (13 downto 0) := (others => '0');
+signal aux_decenas, next_decenas, aux_unidades : unsigned (4 downto 0) := (others => '0');
+signal next_unidades : unsigned (9 downto 0) := (others => '0');
 signal display7 : STD_LOGIC_VECTOR (6 downto 0) := (others=>'0');
 signal aux_AN   : STD_LOGIC_VECTOR (7 downto 0) := (others=> '1');
 
@@ -82,7 +82,7 @@ begin
     if(clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
         counter <= next_counter;
         aux_decenas <= next_decenas;
-        aux_unidades <= next_unidades(6 downto 0);
+        aux_unidades <= next_unidades(4 downto 0);
     end if;
 end process;
 
@@ -102,10 +102,10 @@ begin
     toDisplay <= (others => '1');
     next_counter <= counter + 1;
     if (reset = '0') then
-        if (counter = "0") then
+        if (counter = x"A") then
             toDisplay <= decenas;
             aux_AN <= x"FD";
-        elsif (counter = "1") then
+        elsif (counter = "0") then
             toDisplay<= unidades;
             aux_AN <= x"FE";
         end if;
