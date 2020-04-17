@@ -113,6 +113,7 @@ signal start_play ,next_start_play  : STD_LOGIC :='0';
 signal aux_filter_In_enable : STD_logic := '0';
 
 signal samples_left,aux_seconds_left : unsigned (18 downto 0) := (others => '0');
+signal count_whistle, next_count_whistle : unsigned(2 downto 0) := (others => '0');
 
 begin
 
@@ -134,6 +135,7 @@ if (reset = '1') then
     last_filter_in <= (others=> '0');
 elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     state <= next_state;
+    count_whistle <= next_count_whistle;
     aux_play_ADDR <= next_play_ADDR;
     aux_record_ADDR <= next_record_ADDR;
     last_ADDR <= aux_ADDR;
@@ -159,6 +161,7 @@ next_state <= state;
 next_play_ADDR <= aux_play_ADDR;
 next_record_ADDR <= aux_record_ADDR;
 next_play_reverse_ADDR <= aux_play_reverse_ADDR;
+next_count_whistle <= count_whistle;
 
 aux_EN_RAM <= '0';
 aux_ENW_RAM <= "0";
@@ -219,6 +222,10 @@ case(state) is
                 next_record_ADDR <= aux_record_ADDR + 1;
                 aux_ADDR <= std_logic_vector(aux_record_ADDR);
                 aux_DATA_IN <= sample_out;
+            end if;
+            
+            if (sample_request='1' and count_whistle < 6) then
+                next_count_whistle <= count_whistle + 1;       
             end if;
             
         else
@@ -317,9 +324,21 @@ case(state) is
 end process;
 
 --Display
-process(samples_left)
+process(samples_left, count_whistle)
 begin
     aux_seconds_left <= (samples_left+SAMPLE_RATE-1)/SAMPLE_RATE;
+    if (aux_seconds_left <= 3) then
+        aux_sample_in <= (others => '1');   -- entrada al PWM: 255  
+        if (count_whistle = 5) then
+            aux_sample_in <= "11100001";    -- entrada al PWM: 225
+        elsif (count_whistle > 5) then
+            aux_sample_in <= (others => '0');
+        end if;
+        
+        if (aux_seconds_left = 0) then
+            aux_sample_in <= (others => '1');
+        end if;
+    end if;
 end process;
 seconds_left <= aux_seconds_left(4 downto 0);
 
