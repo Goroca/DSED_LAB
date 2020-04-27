@@ -62,7 +62,10 @@ CE  : out std_logic;
 CF  : out std_logic;
 CG  : out std_logic;
 AN  : out STD_LOGIC_VECTOR (7 downto 0);
-DP  : out std_logic
+DP  : out std_logic;
+--VOLUMEN
+SW14 : in STD_LOGIC;
+SW15 : in STD_LOGIC
 );
 end dsed_audio;
 
@@ -98,7 +101,13 @@ component audio_interface
            sample_request: out std_logic;
            --To/From the mini-jack
            jack_sd : out STD_LOGIC;
-           jack_pwm : out STD_LOGIC);
+           jack_pwm : out STD_LOGIC;
+           --VOLUMEN
+           SW14 : in STD_LOGIC;
+           SW15 : in STD_LOGIC;
+           level : out unsigned(4 downto 0)
+           );
+           
 end component;
 
 component blk_mem_gen_0 
@@ -174,7 +183,8 @@ component Display
  Port ( 
     clk_12MHz : in std_logic;
     reset : in std_logic;
-    number : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+    seconds : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+    level : in unsigned(4 downto 0);
     CA  : out std_logic;
     CB  : out std_logic;
     CC  : out std_logic;
@@ -207,6 +217,7 @@ end component;
   
   --DISPLAY
   signal seconds_left         :  unsigned (4 downto 0);     
+  signal level :  unsigned(4 downto 0);
 
 begin
 
@@ -238,7 +249,12 @@ audio: audio_interface
            sample_request => aux_sample_request, --: out std_logic;
            --To/From the mini-jack
            jack_sd => jack_sd,--: out STD_LOGIC;
-           jack_pwm => jack_pwm --: out STD_LOGIC
+           jack_pwm => jack_pwm, --: out STD_LOGIC
+           --VOLUMEN
+           SW14 => SW14, --: in STD_LOGIC
+           SW15 => SW15, --: in STD_LOGIC
+           level => level --: out unsigned(4 downto 0)
+
            );
 
 FILTER: fir_filter 
@@ -306,11 +322,12 @@ MEMORY:  blk_mem_gen_0
              --DISPLAY
              seconds_left => seconds_left);--: out UNSIGNED (4 downto 0);
              
-secods: Display 
+Display_Controller: Display 
               Port Map( 
                  clk_12MHz => clk_system,--: in std_logic;
                  reset => reset,--: in std_logic;
-                 number => seconds_left,--: in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+                 seconds => seconds_left,--: in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+                 level => level, --: out unsigned(4 downto 0)
                  CA  => CA,--: out std_logic;
                  CB  => CB,--: out std_logic;
                  CC  => CC,--: out std_logic;

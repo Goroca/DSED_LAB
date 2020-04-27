@@ -10,8 +10,8 @@ Time Resolution for simulation is 1ps
 Compiling package std.standard
 Compiling package std.textio
 Compiling package ieee.std_logic_1164
-Compiling package xil_defaultlib.package_dsed
 Compiling package ieee.numeric_std
+Compiling package xil_defaultlib.package_dsed
 Compiling package unisim.vcomponents
 Compiling package ieee.std_logic_arith
 Compiling package ieee.std_logic_signed
@@ -27,6 +27,7 @@ Compiling architecture structure of entity xil_defaultlib.clk_12MHz [clk_12mhz_d
 Compiling architecture behavioral of entity xil_defaultlib.en_4_cycles [en_4_cycles_default]
 Compiling architecture behavioral of entity xil_defaultlib.FSMD_microphone [fsmd_microphone_default]
 Compiling architecture behavioral of entity xil_defaultlib.pwm [pwm_default]
+Compiling architecture behavioral of entity xil_defaultlib.volume [volume_default]
 Compiling architecture behavioral of entity xil_defaultlib.audio_interface [audio_interface_default]
 Compiling architecture behavioral of entity xil_defaultlib.datapath [datapath_default]
 Compiling architecture behavioral of entity xil_defaultlib.control [control_default]
@@ -181,6 +182,8 @@ Compiling architecture structure of entity xil_defaultlib.blk_mem_gen_0_blk_mem_
 Compiling architecture structure of entity xil_defaultlib.blk_mem_gen_0_blk_mem_gen_v8_3_6 [blk_mem_gen_0_blk_mem_gen_v8_3_6...]
 Compiling architecture structure of entity xil_defaultlib.blk_mem_gen_0 [blk_mem_gen_0_default]
 Compiling architecture behavioral of entity xil_defaultlib.control_system [control_system_default]
+Compiling architecture behavioral of entity xil_defaultlib.BCD [bcd_default]
+Compiling architecture behavioral of entity xil_defaultlib.Display [display_default]
 Compiling architecture behavioral of entity xil_defaultlib.dsed_audio [dsed_audio_default]
 Compiling architecture behavioral of entity xil_defaultlib.dsed_tb
 Built simulation snapshot DSED_TB_behav

@@ -57,7 +57,20 @@ jack_sd : out STD_LOGIC;
 jack_pwm : out STD_LOGIC;
 --LEDS
 led_record : out STD_LOGIC;
-led_play : out STD_LOGIC
+led_play : out STD_LOGIC;
+--DISPLAY
+CA  : out std_logic;
+CB  : out std_logic;
+CC  : out std_logic;
+CD  : out std_logic;
+CE  : out std_logic;
+CF  : out std_logic;
+CG  : out std_logic;
+AN  : out STD_LOGIC_VECTOR (7 downto 0);
+DP  : out std_logic;
+--VOLUMEN
+SW14 : in STD_LOGIC;
+SW15 : in STD_LOGIC
 );
 end component;
 
@@ -80,7 +93,19 @@ signal jack_pwm : STD_LOGIC :='0';
 --LEDS
 signal led_record : STD_LOGIC :='0';
 signal led_play : STD_LOGIC :='0';
-
+--DISPLAY
+signal CA  :  std_logic :='0';
+signal CB  :  std_logic :='0';
+signal CC  :  std_logic :='0';
+signal CD  :  std_logic :='0';
+signal CE  :  std_logic :='0';
+signal CF  :  std_logic :='0';
+signal CG  :  std_logic :='0';
+signal AN  :  STD_LOGIC_VECTOR (7 downto 0) := (others =>'0');
+signal DP  :  std_logic :='0';
+--VOLUMEN
+signal SW14 :  STD_LOGIC :='0';
+signal SW15 :  STD_LOGIC :='0';
 constant CLK_PERIOD : time := 10 ns;
 
 begin
@@ -105,7 +130,20 @@ jack_sd => jack_sd, --: out STD_LOGIC;
 jack_pwm => jack_pwm, --: out STD_LOGIC;
 --LEDS
 led_record => led_record, --: out STD_LOGIC;
-led_play => led_play--: out STD_LOGIC
+led_play => led_play,--: out STD_LOGIC
+--DISPLAY
+CA  => CA,--: out std_logic;
+CB  => CB,--: out std_logic;
+CC  => CC,--: out std_logic;
+CD  => CD,--: out std_logic;
+CE  => CE,--: out std_logic;
+CF  => CF,--: out std_logic;
+CG  => CG,--: out std_logic;
+AN  => AN,--: out STD_LOGIC_VECTOR (7 downto 0);
+DP  => DP,--: out std_logic;
+--VOLUMEN
+SW14 => SW14,--: in STD_LOGIC;
+SW15 => SW15--: in STD_LOGIC
 );
 
 clk_process: process
@@ -144,12 +182,8 @@ begin
     wait for 200 us;
     micro_data <= '0';
     wait for 200 us;
-    micro_data <=  '1';
-            
+    micro_data <=  '1';           
     END LOOP;        
-        
-    
-    
     BTNL <= '0'; 
     SW0 <= '1';
     SW1 <= '1';
@@ -161,6 +195,14 @@ begin
     
     
     
+end process;
+
+process
+begin
+    SW15 <= '0';
+    wait for 1 us;
+    SW15 <= '1';
+    wait for 1 us;        
 end process;
 
 end Behavioral;

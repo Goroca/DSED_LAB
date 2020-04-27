@@ -30,16 +30,21 @@ entity pwm is
           en_2_cycles: in std_logic;
           sample_in: in std_logic_vector(sample_size-1 downto 0);
           sample_request: out std_logic;
-          pwm_pulse: out std_logic);
+          pwm_pulse: out std_logic;
+          --VOLUMEN
+          factor : in unsigned(7 downto 0)
+          );
 end pwm;
 
 
 architecture Behavioral of pwm is
+signal vol : unsigned (sample_size downto 0) := (others=>'0');
+signal vol_aux : unsigned (15 downto 0) := (others=>'0');
 
 signal r_reg : unsigned (sample_size downto 0) := (others => '0');
 signal r_next : unsigned (sample_size downto 0);
-constant MAX_CUENTA : unsigned(sample_size downto 0) := "100101011"; -- 299
-signal   aux_sample_request, next_sample_request : std_logic := '0';
+signal aux_sample_request, next_sample_request : std_logic := '0';
+signal unsigned_sample_in : unsigned(sample_size-1 downto 0);
 begin
 
 process(clk_12megas,reset)
@@ -56,21 +61,24 @@ end process;
 
 process(r_reg,sample_in)
 begin
-     if (r_reg = MAX_CUENTA) then --or sample_in = "00000000") then
+     if (r_reg >= MAX_PWM) then --or sample_in = "00000000") then
          r_next<=(others=>'0');
      else
          r_next<=r_reg+1;
      end if;
 end process;
 
-    
-pwm_pulse<=     '1' when(( r_reg < unsigned(sample_in) or sample_in="00000000") and reset ='0')else
+
+unsigned_sample_in <= unsigned(sample_in);
+vol_aux <= unsigned_sample_in*factor;
+vol <= vol_aux((sample_size+4) downto 4);
+
+
+pwm_pulse<=     '1' when(( r_reg < vol or sample_in="00000000") and reset ='0')else
 '0';
 
-
-
 with r_reg select next_sample_request <=
-    en_2_cycles when (MAX_CUENTA-1),
+    en_2_cycles when (MAX_PWM-1),
     '0' when others;
 
 sample_request <= aux_sample_request;

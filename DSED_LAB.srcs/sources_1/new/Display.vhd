@@ -36,7 +36,8 @@ entity Display is
  Port ( 
     clk_12MHz : in std_logic;
     reset : in std_logic;
-    number : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+    seconds : in unsigned (4 downto 0); --numero de segundos que quedan de grabación
+    level : in unsigned(4 downto 0);
     CA  : out std_logic;
     CB  : out std_logic;
     CC  : out std_logic;
@@ -51,18 +52,38 @@ end Display;
 
 architecture Behavioral of Display is
 signal counter, next_counter : unsigned (3 downto 0) := x"0";
+signal sec_decenas, sec_unidades : unsigned (3 downto 0) := (others => '0');
+signal lev_decenas, lev_unidades : unsigned (3 downto 0) := (others => '0');
 
-signal toDisplay, decenas, unidades : unsigned (3 downto 0) := (others => '0');
-signal aux_decenas, next_decenas, aux_unidades : unsigned (4 downto 0) := (others => '0');
-signal next_unidades : unsigned (9 downto 0) := (others => '0');
+signal toDisplay : unsigned (3 downto 0) := (others => '0');
 signal display7 : STD_LOGIC_VECTOR (6 downto 0) := (others=>'0');
 signal aux_AN   : STD_LOGIC_VECTOR (7 downto 0) := (others=> '1');
 
-
-
+component BCD is
+  Port (
+    clk_12MHz : in std_logic;
+    number : in unsigned (4 downto 0); 
+    decenas : out unsigned (3 downto 0); 
+    unidades : out unsigned (3 downto 0) 
+   );
+end component;
 begin
 
-
+SECONDS_BCD: BCD 
+  Port MAP(
+    clk_12MHz => clk_12MHz,--: in std_logic;
+    number => seconds,--: in unsigned (4 downto 0); 
+    decenas => sec_decenas,--: out unsigned (3 downto 0); 
+    unidades => sec_unidades--: out unsigned (3 downto 0) 
+   );
+   
+LEVEL_BCD: BCD 
+     Port MAP(
+       clk_12MHz => clk_12MHz,--: in std_logic;
+       number => level,--: in unsigned (4 downto 0); 
+       decenas => lev_decenas,--: out unsigned (3 downto 0); 
+       unidades => lev_unidades--: out unsigned (3 downto 0) 
+      );
 with toDisplay select display7 <=
 --Descodificacion de numeros
 "1001111"  when "0001", -- 1
@@ -81,40 +102,38 @@ process(clk_12MHz)
 begin
     if(clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
         counter <= next_counter;
-        aux_decenas <= next_decenas;
-        aux_unidades <= next_unidades(4 downto 0);
     end if;
 end process;
 
 -- Divide en decenas y unidades el valor de number
-process(number, aux_decenas)
-begin
-
-next_decenas <= number/10;
-next_unidades <= number - aux_decenas*10;
-
-end process;
 
 -- Activa en cada flanco de reloj el display con la cifra correspondiente a las decenas o unidades
-process(counter,decenas,unidades, reset)
+process(counter,sec_decenas,sec_unidades, reset, lev_unidades,lev_decenas)
 begin
     aux_AN <= x"FF";
     toDisplay <= (others => '1');
     next_counter <= counter + 1;
     if (reset = '0') then
-        if (counter = x"A") then
-            toDisplay <= decenas;
-            aux_AN <= x"FD";
-        elsif (counter = x"0") then
-            toDisplay<= unidades;
-            aux_AN <= x"FE";
+    
+        if (counter = "0000") then
+            toDisplay <= sec_decenas;
+            aux_AN <= "11111101";
+        elsif (counter = "0100") then
+            toDisplay<= sec_unidades;
+            aux_AN <= "11111110";
+            
+        elsif (counter = "1000") then
+                toDisplay<= lev_unidades;
+                aux_AN <= "10111111"; 
+                           
+        elsif (counter = "1100") then
+                    toDisplay<= lev_decenas;
+                    aux_AN <= "01111111";            
         end if;
     end if;
 end process;
 
 -- Asignación de las señales de control del display
-decenas <= aux_decenas(3 downto 0);
-unidades <= aux_unidades(3 downto 0);
 
 -- Asignación de las salidas
 CA <= display7(6);

@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 use work.package_dsed.all;
 
@@ -45,7 +46,12 @@ entity audio_interface is
            sample_request: out STD_LOGIC;
            --To/From the mini-jack
            jack_sd : out STD_LOGIC;
-           jack_pwm : out STD_LOGIC);
+           jack_pwm : out STD_LOGIC;
+           --VOLUMEN
+           SW14 : in STD_LOGIC;
+           SW15 : in STD_LOGIC;
+           level : out unsigned(4 downto 0)         
+           );
 end audio_interface;
 
 architecture Behavioral of audio_interface is
@@ -74,7 +80,21 @@ component pwm
            en_2_cycles: in std_logic;
            sample_in: in std_logic_vector(sample_size-1 downto 0);
            sample_request: out std_logic;
-           pwm_pulse: out std_logic);
+           pwm_pulse: out std_logic;
+           --VOLUMEN
+           factor : in unsigned(7 downto 0)
+           );
+end component;
+
+component volume is
+    Port (   
+           clk_12MHz : in std_logic;
+           reset : in std_logic;
+           SW15 : in STD_LOGIC;
+           SW14 : in STD_LOGIC;
+           factor : out unsigned(7 downto 0);
+           level : out unsigned(4 downto 0)
+           );
 end component;
 
 -- señales auxiliares
@@ -85,6 +105,9 @@ signal aux_sample_out:  STD_LOGIC_VECTOR (sample_size-1 downto 0);
 
 
 signal enable_FSMD, enable_PWM : std_logic;        
+
+signal factor : unsigned(7 downto 0);        
+
 
 begin
   
@@ -113,8 +136,20 @@ audio: pwm
         en_2_cycles => enable_PWM,
         sample_in => sample_in,
         sample_request => sample_request,
-        pwm_pulse => jack_pwm);
+        pwm_pulse => jack_pwm,
+        --VOLUMEN
+        factor => factor -- in unsigned(7 downto 0)
+        );
         
+control_volume: volume 
+    Port Map(   
+        clk_12MHz => clk_12megas, --: in std_logic;
+        reset => reset,  --: in std_logic;
+        SW15 => SW15, --: in STD_LOGIC;
+        SW14 =>SW14, --: in STD_LOGIC;
+        factor => factor,--: out unsigned(7 downto 0)
+        level => level --: out unsigned(4 downto 0)
+        );
 enable_FSMD <= aux_en_4_ciclos and record_enable;
 enable_PWM <= aux_en_2_ciclos and play_enable;
 
