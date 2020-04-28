@@ -43,22 +43,23 @@ end BCD;
 
 architecture Behavioral of BCD is
 
-signal aux_decenas, next_decenas, aux_unidades : unsigned (4 downto 0) := (others => '0');
+signal aux_decenas, aux_unidades : unsigned (4 downto 0) := (others => '0');
+signal next_decenas : unsigned(36 downto 0) := (others=>'0');
 signal next_unidades : unsigned (9 downto 0) := (others => '0');
-
+constant ten : unsigned(31 downto 0) := x"19999999"; --0.1 en notacion (0,32)
 begin
 
 process(clk_12MHz)
 begin
     if(clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
-        aux_decenas <= next_decenas;
+        aux_decenas <= next_decenas(36 downto 32);
         aux_unidades <= next_unidades(4 downto 0);
     end if;
 end process;
 
 process(number, aux_decenas)
 begin
-next_decenas <= number/10;
+next_decenas <= number*ten; --notacion (5,32)
 next_unidades <= number - aux_decenas*10;
 end process;
 

@@ -156,7 +156,7 @@ with state select sum_in1 <=
     (others=>'0') when others;
 
 with state select aux_Sample_Out <=
-    R2((sample_size*2-1) downto sample_size) when "111",                         
+    R2((sample_size*2-2) downto sample_size-1) when "111",                         
     last_aux_Sample_Out when others;
 
     

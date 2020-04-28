@@ -112,8 +112,8 @@ signal aux_filter_in, filter_in_SIGNED, last_filter_in : std_logic_vector(sample
 signal start_play ,next_start_play  : STD_LOGIC :='0';
 signal aux_filter_In_enable : STD_logic := '0';
 
-signal samples_left,aux_seconds_left : unsigned (18 downto 0) := (others => '0');
-
+signal samples_left : unsigned (18 downto 0) := (others => '0');
+signal aux_seconds_left : unsigned (50 downto 0) := (others => '0');
 begin
 
 
@@ -323,10 +323,10 @@ end process;
 --Display
 process(samples_left)
 begin
-    
-aux_seconds_left <= (samples_left+SAMPLE_RATE-1)/SAMPLE_RATE;
+aux_seconds_left <= samples_left*PERIOD;
 end process;
-seconds_left <= aux_seconds_left(4 downto 0);
+
+seconds_left <= aux_seconds_left(36 downto 32);
 
 --RAM
 ADDR <= aux_ADDR;

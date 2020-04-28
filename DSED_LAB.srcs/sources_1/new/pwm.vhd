@@ -71,8 +71,16 @@ end process;
 
 unsigned_sample_in <= unsigned(sample_in);
 vol_aux <= unsigned_sample_in*factor;
-vol <= vol_aux((sample_size+4) downto 4);
 
+process(vol_aux)
+begin
+if(vol_aux > "111100000000000") then
+vol <= (others=>'1');
+else
+vol <= vol_aux((sample_size+3) downto 3);
+end if;
+
+end process;
 
 pwm_pulse<=     '1' when(( r_reg < vol or sample_in="00000000") and reset ='0')else
 '0';
