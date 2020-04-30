@@ -116,6 +116,8 @@ signal samples_left : unsigned (18 downto 0) := (others => '0');
 signal aux_seconds_left : unsigned (50 downto 0) := (others => '0');
 
 signal count_tone_250us, next_count_tone_250us : unsigned (4 downto 0) := (others => '0');
+signal count_tone_constant, next_count_tone_constant : unsigned (5 downto 0) := (others => '0');
+
 begin
 
 
@@ -135,6 +137,7 @@ if (reset = '1') then
     start_play <= '0'; 
     last_filter_in <= (others=> '0');
     count_tone_250us <= (others => '0');
+    count_tone_constant <= (others => '0');
 elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     state <= next_state;
     aux_play_ADDR <= next_play_ADDR;
@@ -146,12 +149,13 @@ elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     start_play <= next_start_play;
     last_filter_in <= aux_filter_in;
     count_tone_250us <= next_count_tone_250us;
+    count_tone_constant <= next_count_tone_constant;
 end if;
 
 end process;
 
 -- lógica de estado siguiente
-process(state,BTNC, BTNL, BTNR, SW0, SW1, aux_record_ADDR, aux_play_reverse_ADDR,last_sample_in,last_filter_in, sample_out_ready, sample_out, aux_play_ADDR, sample_request, DATA_OUT,start_play,last_ADDR,last_DATA_IN,aux_filter_out)
+process(state,BTNC, BTNL, BTNR, SW0, SW1, aux_record_ADDR, aux_play_reverse_ADDR,last_sample_in,last_filter_in, sample_out_ready, sample_out, aux_play_ADDR, sample_request, DATA_OUT,start_play,last_ADDR,last_DATA_IN,aux_filter_out,count_tone_250us,count_tone_constant)
 
 begin
 samples_left <= (others => '0');
@@ -181,6 +185,7 @@ aux_filter_in <= last_filter_in;
 
 -- TONE OUTPUT WHEN RECORDING
 next_count_tone_250us <= count_tone_250us;
+next_count_tone_constant <= count_tone_constant;
 
 case(state) is
     when IDLE =>
@@ -236,7 +241,18 @@ case(state) is
             
             if(aux_record_ADDR = MAX_DIR) then
                 aux_play_en <= '1';
-                aux_sample_in <= x"3F"; -- pitido continuo: 1/4 del periodo a 1 (63/255)
+                
+                if(sample_request = '1' and count_tone_constant < 40) then
+                    next_count_tone_constant <= count_tone_constant + 1;
+                else
+                    next_count_tone_constant <= (others => '0');
+                end if;
+                
+                aux_sample_in <= x"FF";
+                if (sample_request = '1' and count_tone_constant >= 20) then
+                    aux_sample_in <= x"00";
+                end if;    
+                
             end if;
             
             if (sample_out_ready='1' and ( aux_record_ADDR < MAX_DIR)) then
