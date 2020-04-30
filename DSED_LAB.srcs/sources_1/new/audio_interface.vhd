@@ -154,5 +154,5 @@ enable_FSMD <= aux_en_4_ciclos and record_enable;
 enable_PWM <= aux_en_2_ciclos and play_enable;
 
 sample_out <= aux_sample_out;
- jack_sd <= AUDIO_OP_CONTROL;
+jack_sd <= AUDIO_OP_CONTROL;
 end Behavioral;

@@ -114,6 +114,8 @@ signal aux_filter_In_enable : STD_logic := '0';
 
 signal samples_left : unsigned (18 downto 0) := (others => '0');
 signal aux_seconds_left : unsigned (50 downto 0) := (others => '0');
+
+signal count_tone_250us, next_count_tone_250us : unsigned (4 downto 0) := (others => '0');
 begin
 
 
@@ -132,6 +134,7 @@ if (reset = '1') then
     aux_play_reverse_ADDR <= (others=>'0'); 
     start_play <= '0'; 
     last_filter_in <= (others=> '0');
+    count_tone_250us <= (others => '0');
 elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     state <= next_state;
     aux_play_ADDR <= next_play_ADDR;
@@ -142,6 +145,7 @@ elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     aux_play_reverse_ADDR <= next_play_reverse_ADDR;
     start_play <= next_start_play;
     last_filter_in <= aux_filter_in;
+    count_tone_250us <= next_count_tone_250us;
 end if;
 
 end process;
@@ -174,6 +178,10 @@ next_start_play <= '0';
 aux_filter_select <= '0';
 aux_filter_In_enable <= '0';
 aux_filter_in <= last_filter_in;
+
+-- TONE OUTPUT WHEN RECORDING
+next_count_tone_250us <= count_tone_250us;
+
 case(state) is
     when IDLE =>
         aux_play_en <= '0';
@@ -206,6 +214,7 @@ case(state) is
         next_record_ADDR <= (others => '0');
         next_play_ADDR <= (others => '0');
         next_play_reverse_ADDR <= (others => '0');
+        next_count_tone_250us <= (others => '0');
         
     when RECORDING =>
         aux_record_en <= '1';
@@ -215,10 +224,21 @@ case(state) is
         samples_left <= MAX_DIR - aux_record_ADDR;
         if (BTNL = '1')then 
             next_state <= RECORDING;
-            if(aux_record_ADDR = MAX_DIR) then
-                aux_play_en <= '1'; 
-                aux_sample_in <= (others =>'1');
+            if (samples_left <= 60000 and count_tone_250us < 5) then
+                aux_play_en <= '1';
+                aux_sample_in <= x"3F"; -- pitido continuo: 1/4 del periodo a 1 (63/255)
+                if (sample_request = '1') then
+                    next_count_tone_250us <= count_tone_250us + 1;
+                end if;
+            else
+                aux_sample_in <= x"00"; -- tiempo de pitido excedido: tras 250 us
             end if;
+            
+            if(aux_record_ADDR = MAX_DIR) then
+                aux_play_en <= '1';
+                aux_sample_in <= x"3F"; -- pitido continuo: 1/4 del periodo a 1 (63/255)
+            end if;
+            
             if (sample_out_ready='1' and ( aux_record_ADDR < MAX_DIR)) then
                 next_record_ADDR <= aux_record_ADDR + 1;
                 aux_ADDR <= std_logic_vector(aux_record_ADDR);
