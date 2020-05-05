@@ -52,10 +52,10 @@ end Display;
 
 architecture Behavioral of Display is
 signal counter, next_counter : unsigned (3 downto 0) := x"0";
-signal decenas, unidades : unsigned (3 downto 0) := (others => '0');
-signal number : unsigned(4 downto 0);
+signal decenas, unidades : STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+signal number : STD_LOGIC_VECTOR(4 downto 0);
 
-signal toDisplay : unsigned (3 downto 0) := (others => '0');
+signal toDisplay : STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
 signal display7 : STD_LOGIC_VECTOR (6 downto 0) := (others=>'0');
 signal aux_AN   : STD_LOGIC_VECTOR (7 downto 0) := (others=> '1');
 
@@ -95,21 +95,21 @@ begin
     if (reset = '0') then
     
         if (counter = "0000") then
-            number <= seconds;
+            number <= std_logic_vector(seconds);
             toDisplay <= decenas;
             aux_AN <= "11111101";
         elsif (counter = "0100") then
-            number <= seconds;
+            number <= std_logic_vector(seconds);
             toDisplay <= unidades;
             aux_AN <= "11111110";
             
         elsif (counter = "1000") then
-            number <= level;
+            number <= std_logic_vector(level);
             toDisplay <= unidades;
             aux_AN <= "10111111"; 
                            
         elsif (counter = "1100") then
-            number <= level;
+            number <= std_logic_vector(level);
             toDisplay <= decenas;
             aux_AN <= "01111111";            
         end if;
