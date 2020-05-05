@@ -52,35 +52,16 @@ end Display;
 
 architecture Behavioral of Display is
 signal counter, next_counter : unsigned (3 downto 0) := x"0";
-signal sec_decenas, sec_unidades : unsigned (3 downto 0) := (others => '0');
-signal lev_decenas, lev_unidades : unsigned (3 downto 0) := (others => '0');
+signal decenas, unidades : unsigned (3 downto 0) := (others => '0');
+signal number : unsigned(4 downto 0);
 
 signal toDisplay : unsigned (3 downto 0) := (others => '0');
 signal display7 : STD_LOGIC_VECTOR (6 downto 0) := (others=>'0');
 signal aux_AN   : STD_LOGIC_VECTOR (7 downto 0) := (others=> '1');
 
-component BCD is
-  Port (
-    number : in unsigned (4 downto 0); 
-    decenas : out unsigned (3 downto 0); 
-    unidades : out unsigned (3 downto 0) 
-   );
-end component;
 begin
 
-SECONDS_BCD: BCD 
-  Port MAP(
-    number => seconds,--: in unsigned (4 downto 0); 
-    decenas => sec_decenas,--: out unsigned (3 downto 0); 
-    unidades => sec_unidades--: out unsigned (3 downto 0) 
-   );
-   
-LEVEL_BCD: BCD 
-     Port MAP(
-       number => level,--: in unsigned (4 downto 0); 
-       decenas => lev_decenas,--: out unsigned (3 downto 0); 
-       unidades => lev_unidades--: out unsigned (3 downto 0) 
-      );
+
 with toDisplay select display7 <=
 --Descodificacion de numeros
 "1001111"  when "0001", -- 1
@@ -105,32 +86,100 @@ end process;
 -- Divide en decenas y unidades el valor de number
 
 -- Activa en cada flanco de reloj el display con la cifra correspondiente a las decenas o unidades
-process(counter,sec_decenas,sec_unidades, reset, lev_unidades,lev_decenas)
+process(counter, reset,decenas,unidades)
 begin
     aux_AN <= x"FF";
     toDisplay <= (others => '1');
     next_counter <= counter + 1;
+    number <= (others=>'0');
     if (reset = '0') then
     
         if (counter = "0000") then
-            toDisplay <= sec_decenas;
+            number <= seconds;
+            toDisplay <= decenas;
             aux_AN <= "11111101";
         elsif (counter = "0100") then
-            toDisplay<= sec_unidades;
+            number <= seconds;
+            toDisplay <= unidades;
             aux_AN <= "11111110";
             
         elsif (counter = "1000") then
-                toDisplay<= lev_unidades;
-                aux_AN <= "10111111"; 
+            number <= level;
+            toDisplay <= unidades;
+            aux_AN <= "10111111"; 
                            
         elsif (counter = "1100") then
-                    toDisplay<= lev_decenas;
-                    aux_AN <= "01111111";            
+            number <= level;
+            toDisplay <= decenas;
+            aux_AN <= "01111111";            
         end if;
     end if;
 end process;
 
--- Asignación de las señales de control del display
+--BCD
+with number select decenas <=
+"0000"  when "00000",  --0 
+"0000"  when "00001",  --1    
+"0000"  when "00010",  --2    
+"0000"  when "00011",  --3    
+"0000"  when "00100",  --4    
+"0000"  when "00101",  --5    
+"0000"  when "00110",  --6    
+"0000"  when "00111",  --7    
+"0000"  when "01000",  --8    
+"0000"  when "01001",  --9    
+"0001"  when "01010",  --10    
+"0001"  when "01011",  --11    
+"0001"  when "01100",  --12   
+"0001"  when "01101",  --13   
+"0001"  when "01110",  --14   
+"0001"  when "01111",  --15   
+"0001"  when "10000",  --16   
+"0001"  when "10001",  --17   
+"0001"  when "10010",  --18   
+"0001"  when "10011",  --19   
+"0010"  when "10100",  --20 
+"0010"  when "10101",  --21 
+"0010"  when "10110",  --22 
+"0010"  when "10111",  --23 
+"0010"  when "11000",  --24 
+"0010"  when "11001",  --25 
+"0010"  when "11010",  --26 
+"0010"  when "11011",  --27 
+"1111"  when others;  
+
+with number select unidades <=
+"0000"  when "00000",  --0 
+"0001"  when "00001",  --1    
+"0010"  when "00010",  --2    
+"0011"  when "00011",  --3    
+"0100"  when "00100",  --4    
+"0101"  when "00101",  --5    
+"0110"  when "00110",  --6    
+"0111"  when "00111",  --7    
+"1000"  when "01000",  --8    
+"1001"  when "01001",  --9    
+"0000"  when "01010",  --10    
+"0001"  when "01011",  --11    
+"0010"  when "01100",  --12   
+"0011"  when "01101",  --13   
+"0100"  when "01110",  --14   
+"0101"  when "01111",  --15   
+"0110"  when "10000",  --16   
+"0111"  when "10001",  --17   
+"1000"  when "10010",  --18   
+"1001"  when "10011",  --19   
+"0000"  when "10100",  --20 
+"0001"  when "10101",  --21 
+"0010"  when "10110",  --22 
+"0011"  when "10111",  --23 
+"0100"  when "11000",  --24 
+"0101"  when "11001",  --25 
+"0110"  when "11010",  --26 
+"0111"  when "11011",  --27 
+"1111"  when others;   
+
+
 
 -- Asignación de las salidas
 CA <= display7(6);
