@@ -61,7 +61,6 @@ signal aux_AN   : STD_LOGIC_VECTOR (7 downto 0) := (others=> '1');
 
 component BCD is
   Port (
-    clk_12MHz : in std_logic;
     number : in unsigned (4 downto 0); 
     decenas : out unsigned (3 downto 0); 
     unidades : out unsigned (3 downto 0) 
@@ -71,7 +70,6 @@ begin
 
 SECONDS_BCD: BCD 
   Port MAP(
-    clk_12MHz => clk_12MHz,--: in std_logic;
     number => seconds,--: in unsigned (4 downto 0); 
     decenas => sec_decenas,--: out unsigned (3 downto 0); 
     unidades => sec_unidades--: out unsigned (3 downto 0) 
@@ -79,7 +77,6 @@ SECONDS_BCD: BCD
    
 LEVEL_BCD: BCD 
      Port MAP(
-       clk_12MHz => clk_12MHz,--: in std_logic;
        number => level,--: in unsigned (4 downto 0); 
        decenas => lev_decenas,--: out unsigned (3 downto 0); 
        unidades => lev_unidades--: out unsigned (3 downto 0) 

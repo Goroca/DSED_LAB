@@ -34,7 +34,6 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity BCD is
   Port (
-    clk_12MHz : in std_logic;
     number : in unsigned (4 downto 0); 
     decenas : out unsigned (3 downto 0); 
     unidades : out unsigned (3 downto 0) 
@@ -42,28 +41,54 @@ entity BCD is
 end BCD;
 
 architecture Behavioral of BCD is
-
-signal aux_decenas, aux_unidades : unsigned (4 downto 0) := (others => '0');
-signal next_decenas : unsigned(36 downto 0) := (others=>'0');
-signal next_unidades : unsigned (9 downto 0) := (others => '0');
-constant ten : unsigned(31 downto 0) := x"19999999"; --0.1 en notacion (0,32)
 begin
 
-process(clk_12MHz)
-begin
-    if(clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
-        aux_decenas <= next_decenas(36 downto 32);
-        aux_unidades <= next_unidades(4 downto 0);
-    end if;
-end process;
+with number select decenas <=
+"0000"  when "00000",  --0 
+"0000"  when "00001",  --1    
+"0000"  when "00010",  --2    
+"0000"  when "00011",  --3    
+"0000"  when "00100",  --4    
+"0000"  when "00101",  --5    
+"0000"  when "00110",  --6    
+"0000"  when "00111",  --7    
+"0000"  when "01000",  --8    
+"0000"  when "01001",  --9    
+"0001"  when "01010",  --10    
+"0001"  when "01011",  --11    
+"0001"  when "01100",  --12   
+"0001"  when "01101",  --13   
+"0001"  when "01110",  --14   
+"0001"  when "01111",  --15   
+"0001"  when "10000",  --16   
+"0001"  when "10001",  --17   
+"0001"  when "10010",  --18   
+"0001"  when "10011",  --19   
+"0010"  when "10100",  --20 
+"1111"  when others;  
 
-process(number, aux_decenas)
-begin
-next_decenas <= number*ten; --notacion (5,32)
-next_unidades <= number - aux_decenas*10;
-end process;
-
-decenas <= aux_decenas(3 downto 0);
-unidades <= aux_unidades(3 downto 0);
+with number select unidades <=
+"0000"  when "00000",  --0 
+"0001"  when "00001",  --1    
+"0010"  when "00010",  --2    
+"0011"  when "00011",  --3    
+"0100"  when "00100",  --4    
+"0101"  when "00101",  --5    
+"0110"  when "00110",  --6    
+"0111"  when "00111",  --7    
+"1000"  when "01000",  --8    
+"1001"  when "01001",  --9    
+"0000"  when "01010",  --10    
+"0001"  when "01011",  --11    
+"0010"  when "01100",  --12   
+"0011"  when "01101",  --13   
+"0100"  when "01110",  --14   
+"0101"  when "01111",  --15   
+"0110"  when "10000",  --16   
+"0111"  when "10001",  --17   
+"1000"  when "10010",  --18   
+"1001"  when "10011",  --19   
+"0000"  when "10100",  --20 
+"1111"  when others;    
 
 end Behavioral;
