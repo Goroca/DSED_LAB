@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2017.2 (win64) Build 1909853 Thu Jun 15 18:39:09 MDT 2017
 -- Date        : Mon Apr 27 16:07:39 2020
 -- Host        : CARLOS-LAPTOP running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               C:/Users/Carlos/Vivado-Workspace/DSED_LAB/DSED_LAB.srcs/sources_1/ip/clk_12MHz/clk_12MHz_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top clk_12MHz -prefix
+--               clk_12MHz_ clk_12MHz_sim_netlist.vhdl
 -- Design      : clk_12MHz
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -20,8 +20,6 @@ entity clk_12MHz_clk_12MHz_clk_wiz is
     reset : in STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of clk_12MHz_clk_12MHz_clk_wiz : entity is "clk_12MHz_clk_wiz";
 end clk_12MHz_clk_12MHz_clk_wiz;
 
 architecture STRUCTURE of clk_12MHz_clk_12MHz_clk_wiz is

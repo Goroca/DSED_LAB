@@ -32,17 +32,17 @@ entity pwm is
           sample_request: out std_logic;
           pwm_pulse: out std_logic;
           --VOLUMEN
-          factor : in unsigned(7 downto 0)
+          factor : in unsigned(8 downto 0)
           );
 end pwm;
 
 
 architecture Behavioral of pwm is
-signal vol : unsigned (sample_size downto 0) := (others=>'0');
-signal vol_aux : unsigned (15 downto 0) := (others=>'0');
+signal vol : unsigned (10 downto 0) := (others=>'0');
+signal vol_aux : unsigned (16 downto 0) := (others=>'0');
 
-signal r_reg : unsigned (sample_size downto 0) := (others => '0');
-signal r_next : unsigned (sample_size downto 0);
+signal r_reg : unsigned (10 downto 0) := (others => '0');
+signal r_next : unsigned (10 downto 0);
 signal aux_sample_request : std_logic := '0';
 signal unsigned_sample_in : unsigned(sample_size-1 downto 0);
 begin
@@ -69,14 +69,14 @@ end process;
 
 
 unsigned_sample_in <= unsigned(sample_in);
-vol_aux <= unsigned_sample_in*factor;
+vol_aux <= unsigned_sample_in*factor; --<8,0> * <4,5> = <12,5>
 
 process(vol_aux)
 begin
-if(vol_aux > "111100000000000") then
+if(vol_aux > "01111111100000000") then
 vol <= (others=>'1');
 else
-vol <= vol_aux((sample_size+3) downto 3);
+vol <= vol_aux(15 downto 5); --vol esta en <11,0>
 end if;
 
 end process;

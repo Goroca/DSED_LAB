@@ -11,6 +11,6 @@ constant SAMPLE_CLK_EDGE : STD_LOGIC := '1';  -- determina que el muestreo se re
 
 constant PERIOD : UNSIGNED(31 downto 0) := x"000346DC"; -- 1/20000 en (0,32)
 
-constant MAX_PWM : unsigned(sample_size downto 0) := "100101011"; -- 299
+constant MAX_PWM : unsigned(10 downto 0) := "00100101011"; -- 299
 
 end package_dsed;

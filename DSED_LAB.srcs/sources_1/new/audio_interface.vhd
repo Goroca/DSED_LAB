@@ -82,7 +82,7 @@ component pwm
            sample_request: out std_logic;
            pwm_pulse: out std_logic;
            --VOLUMEN
-           factor : in unsigned(7 downto 0)
+           factor : in unsigned(8 downto 0)
            );
 end component;
 
@@ -92,7 +92,7 @@ component volume is
            reset : in std_logic;
            SW15 : in STD_LOGIC;
            SW14 : in STD_LOGIC;
-           factor : out unsigned(7 downto 0);
+           factor : out unsigned(8 downto 0);
            level : out unsigned(4 downto 0)
            );
 end component;
@@ -106,7 +106,7 @@ signal aux_sample_out:  STD_LOGIC_VECTOR (sample_size-1 downto 0);
 
 signal enable_FSMD, enable_PWM : std_logic;        
 
-signal factor : unsigned(7 downto 0);        
+signal factor : unsigned(8 downto 0);        
 
 
 begin

@@ -3,8 +3,8 @@
 // Tool Version: Vivado v.2017.2 (win64) Build 1909853 Thu Jun 15 18:39:09 MDT 2017
 // Date        : Mon Apr 27 16:07:39 2020
 // Host        : CARLOS-LAPTOP running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim
-//               C:/Users/Carlos/Vivado-Workspace/DSED_LAB/DSED_LAB.srcs/sources_1/ip/clk_12MHz/clk_12MHz_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top clk_12MHz -prefix
+//               clk_12MHz_ clk_12MHz_sim_netlist.v
 // Design      : clk_12MHz
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -31,7 +31,6 @@ module clk_12MHz
         .reset(reset));
 endmodule
 
-(* ORIG_REF_NAME = "clk_12MHz_clk_wiz" *) 
 module clk_12MHz_clk_12MHz_clk_wiz
    (clk_out1,
     reset,

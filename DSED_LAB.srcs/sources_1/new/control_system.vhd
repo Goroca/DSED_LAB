@@ -229,7 +229,7 @@ case(state) is
         samples_left <= MAX_DIR - aux_record_ADDR;
         if (BTNL = '1')then 
             next_state <= RECORDING;
-            if (samples_left <= 60000 and count_tone_250us < 5) then
+            if ((MAX_DIR - aux_record_ADDR) <= 60000 and count_tone_250us < 5) then
                 aux_play_en <= '1';
                 aux_sample_in <= x"3F"; -- pitido continuo: 1/4 del periodo a 1 (63/255)
                 if (sample_request = '1') then
