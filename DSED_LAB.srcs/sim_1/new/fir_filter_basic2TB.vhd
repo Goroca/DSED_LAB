@@ -40,16 +40,13 @@ end fir_filter_basic2TB;
 architecture Behavioral of fir_filter_basic2TB is
 constant clk_period : time := 83 ns;
 
-       signal clk :  STD_LOGIC;
-       signal Reset :  STD_LOGIC :='0';
-       signal Sample_In :  signed (sample_size-1 downto 0) := (others=>'0');
-       signal Sample_In_enable :  STD_LOGIC:= '0';
-       signal filter_select:  STD_LOGIC :='0'; --0 lowpass, 1 highpass
-       signal Sample_Out :  signed (sample_size-1 downto 0);
-       signal Sample_Out_ready :  STD_LOGIC;
-
-
-
+signal clk :  STD_LOGIC;
+signal Reset :  STD_LOGIC :='0';
+signal Sample_In :  signed (sample_size-1 downto 0) := (others=>'0');
+signal Sample_In_enable :  STD_LOGIC:= '0';
+signal filter_select:  STD_LOGIC :='0'; --0 lowpass, 1 highpass
+signal Sample_Out :  signed (sample_size-1 downto 0);
+signal Sample_Out_ready :  STD_LOGIC;
 
 
 component fir_filter
@@ -110,8 +107,7 @@ wait for 83ns;
 Sample_In_enable <= '0';
 wait for 83*7ns;
 
---Sample_In <= "00010000";
-Sample_In <= "00000000";
+Sample_In <= "00010000";
 Sample_In_enable <= '1';
 wait for 83ns;
 Sample_In_enable <= '0';
@@ -135,8 +131,13 @@ Sample_In <= "00000000";
 Sample_In_enable <= '1';
 wait for 83ns;
 Sample_In_enable <= '0';
-wait for 83*6ns;
+wait for 83*7ns;
 
+Sample_In <= "00000000";
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
 
 Sample_In <= "00000000";
 Sample_In_enable <= '1';

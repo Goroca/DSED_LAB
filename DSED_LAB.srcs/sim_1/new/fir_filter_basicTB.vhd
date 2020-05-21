@@ -49,9 +49,6 @@ constant clk_period : time := 83 ns;
        signal Sample_Out_ready :  STD_LOGIC;
 
 
-
-
-
 component fir_filter
     Port ( 
        clk : in STD_LOGIC;
@@ -87,7 +84,35 @@ begin
     wait for CLK_PERIOD/2;
 end process;
 
-Sample_In <= "11111111" after 83ns;
-Sample_In_enable <= '1' after 83ns, '0' after 83*2ns;
+Sample_In <= "01000000";
+
+process
+begin
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait for 83*7ns;
+
+Sample_In_enable <= '1';
+wait for 83ns;
+Sample_In_enable <= '0';
+wait;
+
+end process;
 
 end Behavioral;

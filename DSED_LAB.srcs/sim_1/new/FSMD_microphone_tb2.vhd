@@ -83,14 +83,11 @@ end process;
 
 data_process: process
 begin
-    --reset <= '1';
-    wait for 100 ns;
-    micro_data <= '1';
-    wait for 400 ns;
-    micro_data <= '0';
-    wait for 1000 ns;
-    micro_data <= '1';
-    wait for 800 ns;
-    micro_data <= '0';
+
+    wait for 4000 ns;   
+    micro_data <= '1';  --3 1s
+    wait for 1000 ns;   
+    micro_data <= '0';  --12 0s
+
 end process;
 end Behavioral;

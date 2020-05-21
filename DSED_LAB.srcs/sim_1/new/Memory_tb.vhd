@@ -40,18 +40,20 @@ architecture Behavioral of Memory_tb is
 component blk_mem_gen_0 IS
   PORT (
     clka : IN STD_LOGIC;
+    rsta : IN STD_LOGIC;
     ena : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    addra : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+    addra : IN STD_LOGIC_VECTOR(18 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
     douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
   );
   END component;
 
   signal clka  : STD_LOGIC;
+  signal rsta  : STD_LOGIC := '0';
   signal ena   :  STD_LOGIC := '1'; --Enables Read, Write, and reset operations through port A. Optional in all configurations.
   signal wea   :  STD_LOGIC_VECTOR(0 DOWNTO 0); --Enables Write operations through port A.  Available in all RAM configurations.
-  signal addra :  STD_LOGIC_VECTOR(15 DOWNTO 0); --Addresses the memory space for port A Read and Write operations.
+  signal addra :  STD_LOGIC_VECTOR(18 DOWNTO 0); --Addresses the memory space for port A Read and Write operations.
   signal dina  :  STD_LOGIC_VECTOR(7 DOWNTO 0);
   signal douta :  STD_LOGIC_VECTOR(7 DOWNTO 0);
 
@@ -62,6 +64,7 @@ begin
 UUT: blk_mem_gen_0
   PORT MAP(
     clka => clka,
+    rsta => rsta,
     ena  => ena,
     wea  => wea,
     addra => addra,
@@ -80,15 +83,24 @@ UUT: blk_mem_gen_0
   
   process
   begin
-  wait for 100ns;
   wea<="1";
-  addra <= x"0010";
+  addra <= (4 => '1', 5 => '1', others => '0');
   dina<= x"1F";
   wait for 200ns;
   wea<="0";
-  addra <= x"0010";
+  addra <= (8 => '1', others => '0');
   dina<= x"00";
-  wait for 100ns;
+  wait for 200ns;
+  wea<="1";
+  addra <= (8 => '1', others => '0');
+  dina<= x"09";
+  wait for 200ns;
+  wea<="0";
+  addra <= (8 => '1', others => '0');
+  dina<= x"00";
+  wait for 200ns;
+  rsta<='1';
+  wait;
   end process;
   
   

@@ -43,7 +43,7 @@ signal vol_aux : unsigned (15 downto 0) := (others=>'0');
 
 signal r_reg : unsigned (sample_size downto 0) := (others => '0');
 signal r_next : unsigned (sample_size downto 0);
-signal aux_sample_request, next_sample_request : std_logic := '0';
+signal aux_sample_request : std_logic := '0';
 signal unsigned_sample_in : unsigned(sample_size-1 downto 0);
 begin
 
@@ -52,16 +52,15 @@ begin
     if (reset ='1') then
         r_reg <= (others=>'0');
     elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
-        aux_sample_request  <=   next_sample_request;
         if(en_2_cycles='1') then
              r_reg<= r_next;
         end if;
     end if;
 end process;
 
-process(r_reg,sample_in)
+process(r_reg)
 begin
-     if (r_reg >= MAX_PWM) then --or sample_in = "00000000") then
+     if (r_reg >= MAX_PWM) then
          r_next<=(others=>'0');
      else
          r_next<=r_reg+1;
@@ -82,11 +81,11 @@ end if;
 
 end process;
 
-pwm_pulse<=     '1' when(( r_reg < vol or sample_in="00000000") and reset ='0')else
-'0';
+pwm_pulse <= '1' when(( r_reg < vol or sample_in="00000000") and reset ='0') else '0';
 
-with r_reg select next_sample_request <=
-    en_2_cycles when (MAX_PWM-1),
+
+with r_reg select aux_sample_request <=
+    en_2_cycles when MAX_PWM,
     '0' when others;
 
 sample_request <= aux_sample_request;

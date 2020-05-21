@@ -51,13 +51,20 @@ pause
 %return
 
 % Comparación de los datos con preción real de los filtrados con la placa.
-%vhdlout=load('C:\Users\usuario\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
-vhdlout=load('C:\Users\Carlos\Vivado-WorkSpace\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
+vhdlout=load('C:\Users\usuario\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
+%vhdlout=load('C:\Users\Carlos\Vivado-WorkSpace\DSED_LAB\DSED_LAB.sim\sim_1\behav\sample_out.dat')/127;
 
 sound(vhdlout)
 
 data_filt=data_pb;
 error=data_filt-vhdlout;
+
+plot(data_filt)
+title('Salida del LPF generado con MATLAB')
+pause
+plot(vhdlout)
+title('Salida del LPF generado con VHDL')
+pause
 plot(error)
 title('Error respecto a precisión real')
 return

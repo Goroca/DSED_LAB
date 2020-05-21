@@ -46,12 +46,15 @@ component pwm
           en_2_cycles: in std_logic;
           sample_in: in std_logic_vector(sample_size-1 downto 0);
           sample_request: out std_logic;
-          pwm_pulse: out std_logic);
+          pwm_pulse: out std_logic;
+          --VOLUMEN
+          factor : in unsigned(7 downto 0));
 end component;
 
 -- input signals declaration
 signal clk_12megas, reset, en_2_cycles : STD_LOGIC := '0';
 signal sample_in : STD_LOGIC_VECTOR(sample_size-1 downto 0) := (others => '0');
+signal factor : unsigned(7 downto 0) := "00000001";
 
 -- output signals declaration
 signal sample_request, pwm_pulse : STD_LOGIC;
@@ -69,7 +72,8 @@ UUT: pwm
         en_2_cycles => en_2_cycles,
         sample_in => sample_in,
         sample_request => sample_request,
-        pwm_pulse => pwm_pulse);
+        pwm_pulse => pwm_pulse,
+        factor => factor);
 
 -- CLK and en_2_cycles process definition (50% duty cycle)
 clk_process: process
@@ -98,6 +102,10 @@ begin
     sample_in <= "01001001";
     wait for 49751 ns;
     sample_in <= "10111010";
+    wait for 49851 ns;
+    sample_in <= "00000000";
+    wait for 49851 ns;
+    sample_in <= "11111111";
     wait;
 end process;
 

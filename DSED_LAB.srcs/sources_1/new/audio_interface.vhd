@@ -138,17 +138,17 @@ audio: pwm
         sample_request => sample_request,
         pwm_pulse => jack_pwm,
         --VOLUMEN
-        factor => factor -- in unsigned(7 downto 0)
+        factor => factor
         );
         
 control_volume: volume 
     Port Map(   
-        clk_12MHz => clk_12megas, --: in std_logic;
-        reset => reset,  --: in std_logic;
-        SW15 => SW15, --: in STD_LOGIC;
-        SW14 =>SW14, --: in STD_LOGIC;
-        factor => factor,--: out unsigned(7 downto 0)
-        level => level --: out unsigned(4 downto 0)
+        clk_12MHz => clk_12megas,
+        reset => reset,
+        SW15 => SW15,
+        SW14 =>SW14,
+        factor => factor,
+        level => level
         );
 enable_FSMD <= aux_en_4_ciclos and record_enable;
 enable_PWM <= aux_en_2_ciclos and play_enable;

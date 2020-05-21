@@ -45,18 +45,23 @@ architecture Behavioral of FSMD_microphone is
 type state_type is (S0,S1,S2,S3,S4);
 signal state, next_state : state_type;
 
-signal first_cycle, next_first_cycle : std_logic := '0'; 
+-- Sacar el "dato 2" o no
+signal first_cycle, next_first_cycle : std_logic := '0';
+
+-- Contador de número de ciclos 
 signal cycle,next_cycle : unsigned (8 downto 0):= (others=>'0');
 
---Numero unos
+-- Contador de número de unos
 signal count1,next_count1 : unsigned (sample_size-1 downto 0) := (others=>'0');
 signal count2,next_count2 : unsigned (sample_size-1 downto 0) := (others=>'0');
 
+-- Señal auxiliar para convertir micro_data a unsigned
 signal aux_micro_data : unsigned (0 downto 0);
 
 signal aux_sample_out, last_sample_out : STD_LOGIC_VECTOR (sample_size-1 downto 0) := (others=>'0');
 signal aux_sample_out_ready : STD_LOGIC := '0';
 
+-- Señal auxiliar para activar sample_out_ready durante 1 ciclo de reloj
 signal lock,next_lock : STD_LOGIC := '0';
 
 begin
@@ -106,7 +111,7 @@ case (state) is
     when S1 =>          -- 0 to 105
         next_lock <= '0';
         next_count1 <= count1 + aux_micro_data;
-        if (cycle < 105) then
+        if (cycle <= 105) then
         next_count2 <= count2 + aux_micro_data;
         end if;
         
@@ -117,10 +122,10 @@ case (state) is
         end if;
         
     when S2 =>          --106 to 149
-        next_count1 <= count1 + aux_micro_data;        
+        next_count1 <= count1 + aux_micro_data;    
         if (cycle = 106 and first_cycle = '1') then
-            aux_sample_out <= std_logic_vector(count2); 
-            next_count2 <= (others => '0');       
+            aux_sample_out <= std_logic_vector(count2);
+            next_count2 <= (others => '0');        
             if (lock = '0') then
                 aux_sample_out_ready <= '1';
                 next_lock <= '1';
@@ -136,7 +141,7 @@ case (state) is
         
     when S3 =>          --150 to 255
         next_lock <= '0';
-        if(cycle <255) then
+        if(cycle <= 255) then
             next_count1 <= count1 + aux_micro_data;
         end if;
             next_count2 <= count2 + aux_micro_data;

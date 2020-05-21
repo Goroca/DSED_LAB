@@ -103,9 +103,8 @@ elsif (clk'event and clk='1') then
         x2 <= next_x2;
         x3 <= next_x3;
         x4 <= next_x4;
-        
-
     end if;
+    
     R1 <= next_R1;
     R2 <= next_R2;
     R3 <= mul_out;
@@ -119,10 +118,13 @@ next_x2 <= x1;
 next_x1 <= x0;
 next_x0 <= Sample_In;   
 
+-- salida del sumador
 sum_out <= sum_in0 + sum_in1;
 
+-- salida del medio multiplicador
 mul_out <= mul_in0*mul_in1;
 
+-- extensión de signo a las señales de entrada al sumador: x0,x1,x3,x4
 aux_x0 <= ((sample_size*2-1) downto sample_size => x0(sample_size-1)) & x0;
 aux_x1 <= ((sample_size*2-1) downto sample_size => x1(sample_size-1)) & x1;
 aux_x3 <= ((sample_size*2-1) downto sample_size => x3(sample_size-1)) & x3;
@@ -155,6 +157,7 @@ with state select sum_in1 <=
     R2 when "110",
     (others=>'0') when others;
 
+-- salida del filtro en formato <1,7>
 with state select aux_Sample_Out <=
     R2((sample_size*2-2) downto sample_size-1) when "111",                         
     last_aux_Sample_Out when others;

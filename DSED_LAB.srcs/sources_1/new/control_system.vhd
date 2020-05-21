@@ -294,7 +294,7 @@ case(state) is
         aux_ENW_RAM <= "0";
         led_play <= '1';        
         led_record <= '1';
-        aux_filter_select <= '0' ;      
+        --aux_filter_select <= '0' ;      
         if (sample_request='1' or start_play= '1') then
             next_play_reverse_ADDR <= aux_play_reverse_ADDR -1;
         end if;
@@ -314,7 +314,8 @@ case(state) is
         aux_EN_RAM <= '1';
         aux_ENW_RAM <= "0";
         led_play <= '1';
-        aux_filter_select <= '1';
+        --aux_filter_select <= '1';
+        aux_filter_select <= '0'; 
         if (sample_request='1' or start_play= '1') then
             next_play_ADDR <= aux_play_ADDR + 1;
             aux_filter_In_enable <= '1';
@@ -336,7 +337,7 @@ case(state) is
         aux_EN_RAM <= '1';
         aux_ENW_RAM <= "0";
         led_play <= '1';
-
+        aux_filter_select <= '1';
         if (sample_request='1' or start_play= '1') then
             next_play_ADDR <= aux_play_ADDR + 1;
             aux_filter_In_enable <= '1';
