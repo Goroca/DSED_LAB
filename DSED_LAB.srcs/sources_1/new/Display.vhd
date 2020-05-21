@@ -86,7 +86,7 @@ end process;
 -- Divide en decenas y unidades el valor de number
 
 -- Activa en cada flanco de reloj el display con la cifra correspondiente a las decenas o unidades
-process(counter, reset,decenas,unidades)
+process(counter, reset,decenas,unidades,seconds,level)
 begin
     aux_AN <= x"FF";
     toDisplay <= (others => '1');
