@@ -32,23 +32,22 @@ entity pwm is
           sample_request: out std_logic;
           pwm_pulse: out std_logic;
           --VOLUMEN
-          factor : in unsigned(8 downto 0)
+          factor : in unsigned(8 downto 0) --<4,5>
           );
 end pwm;
 
 
 architecture Behavioral of pwm is
-signal vol : unsigned (10 downto 0) := (others=>'0');
+signal vol : unsigned (7 downto 0) := (others=>'0');
 signal vol_aux : unsigned (16 downto 0) := (others=>'0');
-signal registro : unsigned (12 downto 0) := (others => '0');
-signal r_reg : unsigned (10 downto 0) := (others => '0');
-signal r_next : unsigned (10 downto 0);
+signal r_reg : unsigned (sample_size downto 0) := (others => '0');
+signal r_next : unsigned (sample_size downto 0);
 signal aux_sample_request : std_logic := '0';
 signal unsigned_sample_in : unsigned(sample_size-1 downto 0);
-signal factor_entero : unsigned(3 downto 0);
+signal factor_div8 : unsigned(8 downto 0);
 
 begin
-factor_entero <= factor(8 downto 5);
+
 process(clk_12megas,reset)
 begin
     if (reset ='1') then
@@ -71,31 +70,22 @@ end process;
 
 
 unsigned_sample_in <= unsigned(sample_in);
-vol_aux <= unsigned_sample_in*factor; --<8,0> * <4,5> = <12,5>
+factor_div8 <= "000" & factor(8 downto 3); --<1,8>
+vol_aux <= unsigned_sample_in*factor; --<8,0> * <1,8> = <9,8>   (vol_aux=sample_in*factor/8)
 
 process(vol_aux)
 begin
-if(vol_aux > "01111111100000000") then
+
+if(vol_aux > "01111111100000000") then --255
 vol <= (others=>'1');
 else
-vol <= vol_aux(15 downto 5); --vol esta en <11,0>
+vol <= vol_aux(15 downto 8); --vol esta en <8,0>
 end if;
 
 end process;
 
-pwm_pulse <= '1' when(( registro < vol or sample_in="00000000") and reset ='0') else '0';
+pwm_pulse <= '1' when(( r_reg < vol or sample_in="00000000") and reset ='0') else '0';
 
-process(r_reg,factor_entero)
-begin
-if(factor_entero > "0011") then
-registro <= r_reg & "00";
-elsif(factor_entero > "0001") then
-registro <= "0" & r_reg & "0";
-
-else
-registro <= "00" & r_reg;
-end if;
-end process;
 
 with r_reg select aux_sample_request <=
     en_2_cycles when MAX_PWM,
