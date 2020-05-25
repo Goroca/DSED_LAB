@@ -137,7 +137,6 @@ if (reset = '1') then
     start_play <= '0'; 
     last_filter_in <= (others=> '0');
     count_tone_250us <= (others => '0');
-    count_tone_constant <= (others => '0');
 elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     state <= next_state;
     aux_play_ADDR <= next_play_ADDR;
@@ -149,7 +148,6 @@ elsif (clk_12MHz'event and clk_12MHz = SAMPLE_CLK_EDGE) then
     start_play <= next_start_play;
     last_filter_in <= aux_filter_in;
     count_tone_250us <= next_count_tone_250us;
-    count_tone_constant <= next_count_tone_constant;
 end if;
 
 end process;
@@ -185,7 +183,6 @@ aux_filter_in <= last_filter_in;
 
 -- TONE OUTPUT WHEN RECORDING
 next_count_tone_250us <= count_tone_250us;
-next_count_tone_constant <= count_tone_constant;
 
 case(state) is
     when IDLE =>
@@ -240,19 +237,8 @@ case(state) is
             end if;
             
             if(aux_record_ADDR = MAX_DIR) then
-                aux_play_en <= '1';
-                
-                if(sample_request = '1' and count_tone_constant < 40) then
-                    next_count_tone_constant <= count_tone_constant + 1;
-                else
-                    next_count_tone_constant <= (others => '0');
-                end if;
-                
-                aux_sample_in <= x"FF";
-                if (sample_request = '1' and count_tone_constant >= 20) then
-                    aux_sample_in <= x"00";
-                end if;    
-                
+                aux_play_en <= '1';    
+                aux_sample_in <= x"3F";
             end if;
             
             if (sample_out_ready='1' and ( aux_record_ADDR < MAX_DIR)) then
