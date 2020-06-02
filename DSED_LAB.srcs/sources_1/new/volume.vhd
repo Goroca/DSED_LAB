@@ -50,7 +50,7 @@ constant START_LEVEL : unsigned(4 downto 0) := "01010";
 
 signal last_SW15, last_SW14 : std_logic := '0';
 
-signal aux_level, next_level : unsigned(4 downto 0) := "01010"; -- Start in 11
+signal aux_level, next_level : unsigned(4 downto 0) := "01010"; -- Start in 10
 
 
 signal more, less : STD_LOGIC := '0';
