@@ -52,7 +52,7 @@ process(clk_12megas,reset)
 begin
     if (reset ='1') then
         r_reg <= (others=>'0');
-    elsif(clk_12megas'event and clk_12megas=SAMPLE_CLK_EDGE) then
+    elsif(clk_12megas'event and clk_12megas = SAMPLE_CLK_EDGE) then
         if(en_2_cycles='1') then
              r_reg<= r_next;
         end if;
@@ -70,7 +70,6 @@ end process;
 
 
 unsigned_sample_in <= unsigned(sample_in);
---factor_div8 <= "000" & factor(8 downto 3); --<1,8>
 vol_aux <= unsigned_sample_in*factor; --<8,0> * <4,5> = <12,5>   (vol_aux=sample_in*factor)
 
 process(vol_aux)
