@@ -70,22 +70,19 @@ end process;
 
 
 unsigned_sample_in <= unsigned(sample_in);
-factor_div8 <= "000" & factor(8 downto 3); --<1,8>
-vol_aux <= unsigned_sample_in*factor; --<8,0> * <1,8> = <9,8>   (vol_aux=sample_in*factor/8)
+--factor_div8 <= "000" & factor(8 downto 3); --<1,8>
+vol_aux <= unsigned_sample_in*factor; --<8,0> * <4,5> = <12,5>   (vol_aux=sample_in*factor)
 
 process(vol_aux)
 begin
-
-if(vol_aux > "01111111100000000") then --255
-vol <= (others=>'1');
+if(vol_aux > "1111111100000") then --255 in <7,5>
+vol <= "11111111";
 else
-vol <= vol_aux(15 downto 8); --vol esta en <8,0>
+vol <= vol_aux(12 downto 5); --vol esta en <8,0> 
 end if;
-
 end process;
 
 pwm_pulse <= '1' when(( r_reg < vol or sample_in="00000000") and reset ='0') else '0';
-
 
 with r_reg select aux_sample_request <=
     en_2_cycles when MAX_PWM,
